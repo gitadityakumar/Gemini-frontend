@@ -11,7 +11,7 @@ export default function Home() {
           Get started by editing&nbsp;
           <code className={styles.code}>src/app/page.tsx</code><br /><br /><br />
          
-          <Link href="/dashboard">Dashboard</Link>
+          <Link href="/dashboard" className="text-red-700 bg-slate-600 rounded p-2 cursor-pointer">Dashboard</Link>
         </p>
         <div>
           <a
