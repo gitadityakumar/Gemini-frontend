@@ -4,7 +4,7 @@ import PageHeader from '@/components/ui/pageheader'
 
 const Page = () => {
   // Simulate having more than 4 videos
-  const videoCount = 8; // You can change this to any number
+  const videoCount = 4; // You can change this to any number
 
   return (
     <div className="flex flex-col h-screen bg-neutral-100 dark:bg-neutral-800">
