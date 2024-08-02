@@ -1,5 +1,7 @@
 import Image from "next/image";
 import styles from "./page.module.css";
+import Link from 'next/link'
+
 
 export default function Home() {
   return (
@@ -7,7 +9,9 @@ export default function Home() {
       <div className={styles.description}>
         <p className="text-3xl font-bold underline">
           Get started by editing&nbsp;
-          <code className={styles.code}>src/app/page.tsx</code>
+          <code className={styles.code}>src/app/page.tsx</code><br /><br /><br />
+         
+          <Link href="/dashboard">Dashboard</Link>
         </p>
         <div>
           <a

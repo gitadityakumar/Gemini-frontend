@@ -5,29 +5,28 @@ import {
   IconArrowLeft,
   IconBrandTabler,
   IconSettings,
-  IconUserBolt,
+  IconCpu 
 } from "@tabler/icons-react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 // import Image from "next/image";
 import { cn } from "@/lib/utils";
-// import CardDemo from "@/components/blocks/cards-demo-3";
-import CardDemo from "@/components/blocks/cards-demo-2";
 
-export default function SidebarDemo() {
+
+export default function Layout() {
   const links = [
     {
       label: "Dashboard",
-      href: "#",
+      href: "/dashboard",
       icon: (
         <IconBrandTabler className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
       ),
     },
     {
-      label: "Profile",
-      href: "#",
+      label: "Processed",
+      href: "/processed",
       icon: (
-        <IconUserBolt className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
+        <IconCpu  className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
       ),
     },
     {
@@ -68,7 +67,7 @@ export default function SidebarDemo() {
           <div>
             <SidebarLink
               link={{
-                label: "Manu Arora",
+                label: "Aditya Kumar",
                 href: "#",
                 
               }}
@@ -114,15 +113,7 @@ const Dashboard = () => {
     <div className="flex flex-1">
       <div className="p-2 md:p-10 rounded-tl-2xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 flex flex-col gap-2 flex-1 w-full h-full">
         <div className="flex gap-2">
-          {[...new Array(4)].map((i) => (
-            // <div
-            //   key={"first" + i}
-            //   className="h-20 w-full rounded-lg  bg-gray-100 dark:bg-neutral-800 animate-pulse"
-            // ></div>
-            <CardDemo key={i}/>
-          ))}
          
-          
         </div>
         
        

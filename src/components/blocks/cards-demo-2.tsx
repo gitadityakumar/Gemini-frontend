@@ -22,7 +22,7 @@ export default function CardDemo() {
           />
           <div className="flex flex-col">
             <p className="font-normal text-base text-gray-50 relative z-10">
-              Manu Arora
+              Aditya kumar
             </p>
             <p className="text-sm text-gray-400">2 min read</p>
           </div>
