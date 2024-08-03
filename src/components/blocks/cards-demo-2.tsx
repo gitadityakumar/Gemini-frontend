@@ -1,21 +1,16 @@
 "use client";
+import React, { useState } from "react";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
-import { CheckCircle } from 'lucide-react';
 import Link from 'next/link';
+import { IconCircleCheck, IconCircleCheckFilled } from '@tabler/icons-react';
+import { defaultVideo } from "../../data/data"
 
-const defaultVideo = {
-  channelName: "TheLallantop",
-  channelAvatar: "https://yt3.ggpht.com/4tpv3CE1alB7ayIk-y1ktHsang1dMJkGf4f4dazy55G8j8Y0nGkEYnxNJ30JYOiPf6cCaaMARQ=s88-c-k-c0x00ffffff-no-rj",
-  duration: "10:11",
-  playtime: 100.150728,
-  thumbnailUrl: "https://img.youtube.com/vi/R_1Z-3amyzE/hqdefault.jpg",
-  title: "बदल गया आरक्षण? SC ST reservation को CJI Chandrachud का फैसला बदलेगा ! Supreme Court | Creamy Layer",
-  url: "https://www.youtube.com/watch?v=R_1Z-3amyzE"
-};
+export default function CardDemo({ video = defaultVideo, onSelect }) {
+  const [isSelected, setIsSelected] = useState(false);
 
-export default function CardDemo({ video = defaultVideo }) {
   const {
+    id,
     channelName,
     channelAvatar,
     duration,
@@ -30,9 +25,12 @@ export default function CardDemo({ video = defaultVideo }) {
   const progressPercentage = totalSeconds > 0 ? (playtime / totalSeconds) * 100 : 0;
 
   // Function to get higher quality thumbnail
-  // @ts-ignore
-
   const getHighQualityThumbnail = (url) => url.replace('hqdefault', 'maxresdefault');
+
+  const handleSelect = () => {
+    setIsSelected(!isSelected);
+    onSelect(id, !isSelected);
+  };
 
   return (
     <div className="max-w-xs w-full group/card mt-2">
@@ -87,8 +85,21 @@ export default function CardDemo({ video = defaultVideo }) {
         </div>
 
         {/* Check button */}
-        <div className="absolute top-2 right-2 z-20">
-          <CheckCircle className="text-gray-600 opacity-30 hover:opacity-100 transition-opacity" size={24} />
+        <div 
+          className="absolute top-2 right-2 z-20 transition-all duration-300 ease-in-out" 
+          onClick={handleSelect}
+        >
+          {isSelected ? (
+            <IconCircleCheckFilled 
+              className="text-blue-500"
+              size={28}
+            />
+          ) : (
+            <IconCircleCheck 
+              className="text-gray-400 hover:text-gray-600"
+              size={28}
+            />
+          )}
         </div>
       </div>
     </div>
