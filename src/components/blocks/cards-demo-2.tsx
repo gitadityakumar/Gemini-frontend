@@ -1,14 +1,12 @@
 "use client";
-import React, { useState } from "react";
+import React from "react";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import Link from 'next/link';
 import { IconCircleCheck, IconCircleCheckFilled } from '@tabler/icons-react';
 import { defaultVideo } from "../../data/data"
 
-export default function CardDemo({ video = defaultVideo, onSelect }) {
-  const [isSelected, setIsSelected] = useState(false);
-
+export default function CardDemo({ video = defaultVideo, onSelect, isSelected }) {
   const {
     id,
     channelName,
@@ -28,8 +26,7 @@ export default function CardDemo({ video = defaultVideo, onSelect }) {
   const getHighQualityThumbnail = (url) => url.replace('hqdefault', 'maxresdefault');
 
   const handleSelect = () => {
-    setIsSelected(!isSelected);
-    onSelect(id, !isSelected);
+    onSelect(id);
   };
 
   return (
