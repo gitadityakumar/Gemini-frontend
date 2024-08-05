@@ -15,7 +15,7 @@ const Page = () => {
     id: String(index),
      // Add a unique title for each video
   }));
-
+ // @ts-ignore
   const handleVideoSelect = (video) => {
     setSelectedVideos(prevSelected => {
       const newSelected = new Map(prevSelected);
@@ -48,7 +48,7 @@ const Page = () => {
     <div className="flex flex-col h-screen bg-neutral-100 dark:bg-neutral-800">
       <div className="flex-shrink-0 m-4 mt-6 rounded-tl-2xl rounded-tr-2xl overflow-hidden border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900">
         <PageHeader 
-          userName={"Aditya kumar"} 
+        
           onProcess={handleProcess} 
           isProcessing={isProcessing}
         />

@@ -1,6 +1,7 @@
 import Image from "next/image";
 import styles from "./page.module.css";
 import Link from 'next/link'
+import {  SignInButton } from "@clerk/nextjs";
 
 
 export default function Home() {
@@ -11,8 +12,12 @@ export default function Home() {
           Get started by editing&nbsp;
           <code className={styles.code}>src/app/page.tsx</code><br /><br /><br />
          
-          <Link href="/dashboard" className="text-red-700 bg-slate-600 rounded p-2 cursor-pointer">Dashboard</Link>
+          
         </p>
+        <div><Link href="/dashboard" className=" bg-slate-600 text-red-500 rounded h-[35px]  w-[100px] cursor-pointer">Dashboard</Link></div>
+        <div>
+        <SignInButton />
+        </div>
         <div>
           <a
             href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
