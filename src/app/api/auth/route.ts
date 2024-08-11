@@ -18,7 +18,7 @@ export async function GET() {
    
     // Send the data to the backend
     try {
-        const response = await fetch('http://localhost:3001/api/user', {
+        const response = await fetch('http://localhost:3002/api/user', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
