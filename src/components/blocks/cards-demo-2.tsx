@@ -4,11 +4,31 @@ import { cn } from "@/lib/utils";
 import Image from "next/image";
 import Link from 'next/link';
 import { IconCircleCheck, IconCircleCheckFilled } from '@tabler/icons-react';
-import { defaultVideo } from "../../data/data"
 
-export default function CardDemo({ video = defaultVideo, onSelect, isSelected }) {
+
+interface Video {
+  _id: { $oid: string };
+  userId: string;
+  url: string;
+  channelAvatar: string;
+  channelName: string;
+  duration: string;
+  lastUpdated: { $date: string };
+  playtime: number;
+  processed: boolean;
+  thumbnailUrl: string;
+  title: string;
+}
+
+interface CardDemoProps {
+  video: Video;
+  onSelect: (id: string) => void;
+  isSelected: boolean;
+}
+
+export default function CardDemo({ video, onSelect, isSelected }: CardDemoProps) {
   const {
-    id,
+    _id,
     channelName,
     channelAvatar,
     duration,
@@ -18,15 +38,15 @@ export default function CardDemo({ video = defaultVideo, onSelect, isSelected })
     url
   } = video;
 
-  // Calculate progress percentage
-  const totalSeconds = duration.split(':').reduce((acc, time) => (60 * acc) + parseInt(time, 10), 0);
-  const progressPercentage = totalSeconds > 0 ? (playtime / totalSeconds) * 100 : 0;
+ // Calculate progress percentage
+ const totalSeconds = duration.split(':').reduce((acc, time) => (60 * acc) + parseInt(time, 10), 0);
+ const progressPercentage = totalSeconds > 0 ? (playtime / totalSeconds) * 100 : 0;
 
   // Function to get higher quality thumbnail
-  const getHighQualityThumbnail = (url) => url.replace('hqdefault', 'maxresdefault');
+  const getHighQualityThumbnail = (url: string) => url.replace('hqdefault', 'maxresdefault');
 
   const handleSelect = () => {
-    onSelect(id);
+    onSelect(_id.$oid);
   };
 
   return (

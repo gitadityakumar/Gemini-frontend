@@ -1,28 +1,56 @@
 "use client"
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import CardDemo from '@/components/blocks/cards-demo-2'
 import PageHeader from '@/components/ui/pageheader'
-import { defaultVideo } from '@/data/data'
+
+interface Video {
+  _id: { $oid: string };
+  userId: string;
+  url: string;
+  channelAvatar: string;
+  channelName: string;
+  duration: string;
+  lastUpdated: { $date: string };
+  playtime: number;
+  processed: boolean;
+  thumbnailUrl: string;
+  title: string;
+}
 
 const Page = () => {
-  const videoCount = 8;
-  const [selectedVideos, setSelectedVideos] = useState(new Map());
+  const [videos, setVideos] = useState<Video[]>([]);
+  const [selectedVideos, setSelectedVideos] = useState(new Map<string, Video>());
   const [isProcessing, setIsProcessing] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  // Generate an array of videos with unique IDs
-  const videos = Array.from({ length: videoCount }, (_, index) => ({
-    ...defaultVideo,
-    id: String(index),
-     // Add a unique title for each video
-  }));
- // @ts-ignore
-  const handleVideoSelect = (video) => {
+  useEffect(() => {
+    const fetchVideos = async () => {
+      try {
+        const response = await fetch('/api/db');
+        if (!response.ok) {
+          throw new Error('Failed to fetch videos');
+        }
+        const data = await response.json();
+        setVideos(data);
+      } catch (error) {
+        console.error('Error fetching videos:', error);
+        setError('Failed to load videos. Please try again later.');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchVideos();
+  }, []);
+
+  const handleVideoSelect = (video: Video) => {
     setSelectedVideos(prevSelected => {
       const newSelected = new Map(prevSelected);
-      if (newSelected.has(video.id)) {
-        newSelected.delete(video.id);
+      if (newSelected.has(video._id.$oid)) {
+        newSelected.delete(video._id.$oid);
       } else {
-        newSelected.set(video.id, video);
+        newSelected.set(video._id.$oid, video);
       }
       return newSelected;
     });
@@ -31,24 +59,28 @@ const Page = () => {
   const handleProcess = () => {
     setIsProcessing(true);
     
-    // Log selected videos to console
     console.log("Selected Videos:", Array.from(selectedVideos.values()));
 
-    // Simulate processing time
     setTimeout(() => {
       setIsProcessing(false);
       console.log("Processing complete");
       
-      // Reset selected videos
       setSelectedVideos(new Map());
     }, 2000);
   };
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
 
   return (
     <div className="flex flex-col h-screen bg-neutral-100 dark:bg-neutral-800">
       <div className="flex-shrink-0 m-4 mt-6 rounded-tl-2xl rounded-tr-2xl overflow-hidden border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900">
         <PageHeader 
-        
           onProcess={handleProcess} 
           isProcessing={isProcessing}
         />
@@ -59,9 +91,9 @@ const Page = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {videos.map((video) => (
               <CardDemo 
-                key={video.id} 
+                key={video._id.$oid} 
                 video={video}
-                isSelected={selectedVideos.has(video.id)}
+                isSelected={selectedVideos.has(video._id.$oid)}
                 onSelect={() => handleVideoSelect(video)}
               />
             ))}
