@@ -1,4 +1,5 @@
 "use client"
+
 import React, { useState, useEffect } from 'react'
 import CardDemo from '@/components/blocks/cards-demo-2'
 import PageHeader from '@/components/ui/pageheader'
@@ -60,7 +61,7 @@ const Page = () => {
     setIsProcessing(true);
     
     console.log("Selected Videos:", Array.from(selectedVideos.values()));
-
+    
     setTimeout(() => {
       setIsProcessing(false);
       console.log("Processing complete");
@@ -69,35 +70,52 @@ const Page = () => {
     }, 2000);
   };
 
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
+  const renderContent = () => {
+    if (error) {
+      return (
+        <div className="flex items-center justify-center h-full">
+          <div className="text-red-500 text-center">
+            <p className="text-xl font-semibold">Error</p>
+            <p>{error}</p>
+          </div>
+        </div>
+      );
+    }
 
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
-
-  return (
-    <div className="flex flex-col h-screen bg-neutral-100 dark:bg-neutral-800">
-      <div className="flex-shrink-0 m-4 mt-6 rounded-tl-2xl rounded-tr-2xl overflow-hidden border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900">
-        <PageHeader 
-          onProcess={handleProcess} 
-          isProcessing={isProcessing}
-        />
-      </div>
-      
-      <div className="flex-grow overflow-auto m-4 mt-0">
-        <div className="md:p-10 rounded-bl-2xl rounded-br-2xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 min-h-full">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {videos.map((video) => (
-              <CardDemo 
-                key={video._id.$oid} 
+    return (
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        {isLoading
+          ? Array.from({ length: 8 }).map((_, index) => (
+              <div key={index} className="bg-neutral-200 dark:bg-neutral-700 rounded-lg p-4 animate-pulse">
+                <div className="h-40 bg-neutral-300 dark:bg-neutral-600 rounded-md mb-4"></div>
+                <div className="h-4 bg-neutral-300 dark:bg-neutral-600 rounded w-3/4 mb-2"></div>
+                <div className="h-4 bg-neutral-300 dark:bg-neutral-600 rounded w-1/2"></div>
+              </div>
+            ))
+          : videos.map((video) => (
+              <CardDemo
+                key={video._id.$oid}
                 video={video}
                 isSelected={selectedVideos.has(video._id.$oid)}
                 onSelect={() => handleVideoSelect(video)}
               />
             ))}
-          </div>
+      </div>
+    );
+  };
+
+  return (
+    <div className="flex flex-col bg-white h-full w-full overflow-hidden">
+      <div className="flex-shrink-0 p-4">
+        <PageHeader
+          onProcess={handleProcess}
+          isProcessing={isProcessing}
+        />
+      </div>
+      
+      <div className="flex-grow overflow-auto p-4">
+        <div className="bg-white dark:bg-neutral-900 rounded-lg shadow-lg p-6 min-h-full">
+          {renderContent()}
         </div>
       </div>
     </div>

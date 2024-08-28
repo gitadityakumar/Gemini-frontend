@@ -2,16 +2,34 @@ import React from 'react';
 import Image from 'next/image';
 import { useUser } from "@clerk/nextjs";
 
-//@ts-ignore
+interface PageHeaderProps {
+  onProcess: () => void;
+  isProcessing: boolean;
+}
 
-const PageHeader = ({  onProcess, isProcessing }) => {
-  const { user } = useUser();
-  if (!user) return <p>No Image URL found</p>;
-  
- 
-  const { imageUrl,fullName } = user;
+const PageHeader: React.FC<PageHeaderProps> = ({ onProcess, isProcessing }) => {
+  const { user, isLoaded } = useUser();
+
+  // Function to generate a random color
+  const getRandomColor = () => {
+    const letters = '0123456789ABCDEF';
+    let color = '#';
+    for (let i = 0; i < 6; i++) {
+      color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+  };
+
+  // Placeholder data for unauthenticated users
+  const placeholderImageUrl = `https://via.placeholder.com/48x48/${getRandomColor().slice(1)}/FFFFFF?text=?`;
+  const placeholderName = "Guest User";
+
+  // Use actual user data if available, otherwise use placeholder data
+  const imageUrl = isLoaded && user ? user.imageUrl : placeholderImageUrl;
+  const fullName = isLoaded && user ? user.fullName : placeholderName;
+
   return (
-    <header className="bg-white bg-opacity-20 backdrop-filter backdrop-blur-lg border border-gray-200 border-opacity-20 rounded-lg shadow-lg p-4 m-2 flex flex-col md:flex-row items-center justify-between">
+    <header className="bg-zinc-100 bg-opacity-20 backdrop-filter backdrop-blur-lg border border-gray-200 border-opacity-20 rounded-lg shadow-lg p-4 m-2 flex flex-col md:flex-row items-center justify-between">
       <div className="flex items-center mb-4 md:mb-0">
         <Image 
           className='rounded-3xl'
@@ -40,9 +58,7 @@ const PageHeader = ({  onProcess, isProcessing }) => {
           ) : null}
           {isProcessing ? 'Processing...' : 'Process'}
         </button>
-        
       </div>
-     
     </header>
   );
 };
