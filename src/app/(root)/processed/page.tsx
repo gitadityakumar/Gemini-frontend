@@ -1,15 +1,25 @@
-import React from 'react'
+import React from 'react';
+import { MonthlyVideoGrid } from '@/components/ui/MonthlyVideoGrid';
+import { getProcessedVideos } from '@/lib/videoUtils';
 
-const page = () => {
+export default async function ProcessedPage() {
+  // Fetch the videos
+  const videos = await getProcessedVideos();
+
   return (
-    <div className="flex flex-1">
-      <div className="p-2 md:p-10 rounded-tl-2xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 flex flex-col gap-2 flex-1 w-full h-full">
-        <div className="flex gap-2">
-         <h1 className='text-3xl text-yellow-400'> Hi This is processed page. </h1>
-        </div> 
-      </div>
+    <div className="flex flex-col h-screen">
+      <header className="bg-slate-100 dark:bg-slate-800 py-4 flex-shrink-0">
+        <div className="container mx-auto px-4">
+          <h1 className='text-3xl font-bold text-slate-800 dark:text-slate-200'>
+            Processed Videos
+          </h1>
+        </div>
+      </header>
+      <main className="flex-grow overflow-auto">
+        <div className="container mx-auto px-4 py-8">
+          <MonthlyVideoGrid videos={videos} />
+        </div>
+      </main>
     </div>
-  )
+  );
 }
-
-export default page
