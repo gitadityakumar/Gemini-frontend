@@ -1,5 +1,6 @@
 import { Video } from '@/types/processedVideoTypes';
 import mockVideoData from '@/data/data';
+import { formatMonthYear } from '@/lib/dateFormatting';
 
 export async function getProcessedVideos(): Promise<Video[]> {
   // In a real application, this would fetch data from an API
@@ -14,8 +15,7 @@ export async function getVideoDetails(id: string): Promise<Video | null> {
 
 export function groupVideosByMonth(videos: Video[]): Record<string, Video[]> {
   return videos.reduce((acc, video) => {
-    const date = new Date(video.processingDate);
-    const monthYear = date.toLocaleString('default', { month: 'long', year: 'numeric' });
+    const monthYear = formatMonthYear(video.processingDate);
     
     if (!acc[monthYear]) {
       acc[monthYear] = [];
