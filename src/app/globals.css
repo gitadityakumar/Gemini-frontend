@@ -72,7 +72,7 @@
 .cl-internal-1dauvpw {
   display: none;
 }
-
+/* 
 button, [role="button"] {
   cursor: pointer;
   background-color: cadetblue;
@@ -86,8 +86,5 @@ button, [role="button"] {
   display: inline-block;
   transition: background-color 0.3s ease;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
+} */
 
-button:hover, [role="button"]:hover {
-  background-color: #5f9ea0; /* Lighter shade of cadetblue */
-}

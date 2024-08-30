@@ -11,10 +11,13 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 // import Image from "next/image";
 import { cn } from "@/lib/utils";
+import CustomSignOutButton from "@/components/blocks/CustomSignOutButton";
+import { useUser } from "@clerk/nextjs";
 
 
 
 export default function Layout({ children }: Readonly<{children: ReactNode}>) {
+  const { user } = useUser();
   const links = [
     {
       label: "Dashboard",
@@ -27,7 +30,7 @@ export default function Layout({ children }: Readonly<{children: ReactNode}>) {
       label: "Processed",
       href: "/processed",
       icon: (
-        <IconCpu  className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
+        <IconCpu className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
       ),
     },
     {
@@ -39,12 +42,14 @@ export default function Layout({ children }: Readonly<{children: ReactNode}>) {
     },
     {
       label: "Logout",
-      href: "#",
+      // No href here because we're using a custom component
       icon: (
         <IconArrowLeft className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
       ),
+      component: <CustomSignOutButton />
     },
   ];
+  
   const [open, setOpen] = useState(false);
   return (
     <div
@@ -69,8 +74,7 @@ export default function Layout({ children }: Readonly<{children: ReactNode}>) {
             <SidebarLink
               link={{
                 label: "Aditya Kumar",
-                href: "#",
-                
+                href: "/#",
               }}
             />
           </div>

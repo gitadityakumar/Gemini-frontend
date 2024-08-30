@@ -132,7 +132,7 @@ const Page = () => {
         />
       </div>
       
-      <div className="flex-grow overflow-auto p-4">
+      <div className="flex-grow overflow-auto ">
         <div className="bg-white dark:bg-neutral-900 rounded-lg shadow-lg p-6 min-h-full">
           {renderContent()}
         </div>

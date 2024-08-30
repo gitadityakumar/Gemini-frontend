@@ -1,7 +1,7 @@
 import Image from "next/image";
 import styles from "./page.module.css";
 import Link from 'next/link'
-import {  SignInButton } from "@clerk/nextjs";
+import {  SignInButton, SignOutButton } from "@clerk/nextjs";
 
 
 export default function Home() {
@@ -15,8 +15,9 @@ export default function Home() {
           
         </p>
         <div><Link href="/dashboard" className=" bg-slate-600 text-red-500 rounded h-[35px]  w-[100px] cursor-pointer">Dashboard</Link></div>
-        <div>
+        <div className="bg-slate-700 text-white p-2 rounded">
         <SignInButton />
+        
         </div>
         <div>
           <a

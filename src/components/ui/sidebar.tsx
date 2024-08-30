@@ -7,8 +7,9 @@ import { IconMenu2, IconX } from "@tabler/icons-react";
 
 interface Links {
   label: string;
-  href: string;
-  icon: React.JSX.Element | React.ReactNode;
+  href?: string;
+  icon?: React.JSX.Element | React.ReactNode;
+  component?: React.ReactNode;
 }
 
 interface SidebarContextProps {
@@ -160,12 +161,38 @@ export const SidebarLink = ({
   className,
   ...props
 }: {
-  link: Links;
+  link: Links & { component?: React.ReactNode }; // Allow a custom component
   className?: string;
-  props?: LinkProps;
+  props?: Omit<LinkProps, 'href'>; // Ensure href is omitted from LinkProps if not present
 }) => {
   const { open, animate } = useSidebar();
-  return (
+
+  // Render custom component if provided
+  if (link.component) {
+    return (
+      <div
+        className={cn(
+          "flex items-center justify-start gap-2  group/sidebar py-2",
+          className
+        )}
+        {...props}
+      >
+        {link.icon}
+        <motion.div
+          animate={{
+            display: animate ? (open ? "inline-block" : "none") : "inline-block",
+            opacity: animate ? (open ? 1 : 0) : 1,
+          }}
+          className="text-neutral-700 dark:text-neutral-200 text-sm group-hover/sidebar:translate-x-1 transition duration-150 whitespace-pre inline-block !p-0 !m-0"
+        >
+          {link.component}
+        </motion.div>
+      </div>
+    );
+  }
+
+  // Render a standard link if href is provided
+  return link.href ? (
     <Link
       href={link.href}
       className={cn(
@@ -175,7 +202,6 @@ export const SidebarLink = ({
       {...props}
     >
       {link.icon}
-
       <motion.span
         animate={{
           display: animate ? (open ? "inline-block" : "none") : "inline-block",
@@ -186,5 +212,6 @@ export const SidebarLink = ({
         {link.label}
       </motion.span>
     </Link>
-  );
+  ) : null;
 };
+
