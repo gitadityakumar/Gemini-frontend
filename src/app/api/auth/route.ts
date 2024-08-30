@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
-import { currentUser, auth } from "@clerk/nextjs/server";
+import {  auth } from "@clerk/nextjs/server";
+require('dotenv').config();
 
 export async function GET() {
     const { userId } = auth();
@@ -8,17 +9,16 @@ export async function GET() {
         return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    const user = await currentUser();
-
     // Prepare the data to be sent to the backend
     const userData = {
-        id: user?.id,
+        id: userId,
         secret: process.env.SECRET_KEY,
     };
-   
+
+    const backendUrl = process.env.PRIMARY_BACKEND_URL;
     // Send the data to the backend
     try {
-        const response = await fetch('http://localhost:3002/api/user', {
+        const response = await fetch(`${backendUrl}/api/user`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -34,7 +34,7 @@ export async function GET() {
         const backendResponse = await response.json();
         const message = backendResponse.message;
 
-        return NextResponse.json({  message });
+        return NextResponse.json({ message });
     } catch (error) {
         console.error('Error sending user data to backend:', error);
         return new NextResponse('Internal Server Error', { status: 500 });

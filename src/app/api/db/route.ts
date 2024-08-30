@@ -1,16 +1,32 @@
 import { connectToDatabase } from "@/lib/mongodb"
 import { NextRequest, NextResponse } from "next/server"
+import {  auth } from "@clerk/nextjs/server";
 
 export async function GET(req: NextRequest) {
   try {
+    const { userId } = auth();
+    
+    if (!userId) {
+      return new NextResponse("Unauthorized", { status: 401 });
+    }
+
     const { db } = await connectToDatabase()
     
     const videos = await db
       .collection('videoData')
-      .find({ processed: false })
+      .find(
+        {
+           processed: false,
+           userId: userId
+        }
+      )
       .toArray()
 
-    return NextResponse.json(videos, { status: 200 })
+      if (videos.length === 0) {
+        return NextResponse.json({ message: "No data found", hasExtension: false }, { status: 200 })
+      }
+
+      return NextResponse.json({ videos, hasExtension: true }, { status: 200 })
   } catch (error) {
     console.error('Error fetching videos:', error)
     return NextResponse.json({ error: 'Error fetching videos' }, { status: 500 })
