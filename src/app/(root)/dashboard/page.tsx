@@ -55,6 +55,10 @@ const Page = () => {
   };
 
   const handleProcess = () => {
+    if(Array.from(selectedVideos.values()).length==0){
+      alert("Please select at least one video to process");
+      return;
+    }
     setIsProcessing(true);
     console.log("Selected Videos:", Array.from(selectedVideos.values()));
     setTimeout(() => {
@@ -115,7 +119,7 @@ const Page = () => {
           <CardDemo
             key={video._id.$oid}
             video={video}
-            isSelected={(video._id.$oid)}
+            // isSelected={(video._id.$oid)}
             onSelect={handleVideoSelect}
           />
         ))}

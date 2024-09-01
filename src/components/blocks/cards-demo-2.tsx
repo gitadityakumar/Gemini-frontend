@@ -22,11 +22,12 @@ interface Video {
 interface CardDemoProps {
   video: Video;
   onSelect: (id: string) => void;
-  isSelected: String;
+  // isSelected: String;
 }
 
-export default function CardDemo({ video, onSelect, isSelected }: CardDemoProps) {
+export default function CardDemo({ video, onSelect }: CardDemoProps) {
   const [isProcessing, setIsProcessing] = useState(false);
+  const [isSelected, setIsSelected] = useState(false);
   const {
     _id,
     channelName,
@@ -46,13 +47,14 @@ export default function CardDemo({ video, onSelect, isSelected }: CardDemoProps)
   const getHighQualityThumbnail = (url: string) => url.replace('hqdefault', 'maxresdefault');
 
   const handleSelect = () => {
-    
+    setIsSelected(prevState => !prevState);
     setIsProcessing(true);
     onSelect(_id.$oid);
     
     // Simulating processing time
     setTimeout(() => {
       setIsProcessing(false);
+      setIsSelected(false);
     }, 2000); 
   };
 
@@ -113,7 +115,7 @@ export default function CardDemo({ video, onSelect, isSelected }: CardDemoProps)
           className="absolute top-2 right-2 z-20 transition-all duration-300 ease-in-out" 
           onClick={handleSelect}
         >
-          {isSelected ? (           
+          { isSelected ? (           
             <IconCircleCheckFilled 
             className="text-blue-500"
             size={28}
