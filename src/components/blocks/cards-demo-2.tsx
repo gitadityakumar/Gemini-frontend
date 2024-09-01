@@ -1,10 +1,9 @@
 "use client";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import Link from 'next/link';
 import { IconCircleCheck, IconCircleCheckFilled } from '@tabler/icons-react';
-
 
 interface Video {
   _id: { $oid: string };
@@ -23,10 +22,11 @@ interface Video {
 interface CardDemoProps {
   video: Video;
   onSelect: (id: string) => void;
-  isSelected: boolean;
+  isSelected: String;
 }
 
 export default function CardDemo({ video, onSelect, isSelected }: CardDemoProps) {
+  const [isProcessing, setIsProcessing] = useState(false);
   const {
     _id,
     channelName,
@@ -38,15 +38,22 @@ export default function CardDemo({ video, onSelect, isSelected }: CardDemoProps)
     url
   } = video;
 
- // Calculate progress percentage
- const totalSeconds = duration.split(':').reduce((acc, time) => (60 * acc) + parseInt(time, 10), 0);
- const progressPercentage = totalSeconds > 0 ? (playtime / totalSeconds) * 100 : 0;
+  // Calculate progress percentage
+  const totalSeconds = duration.split(':').reduce((acc, time) => (60 * acc) + parseInt(time, 10), 0);
+  const progressPercentage = totalSeconds > 0 ? (playtime / totalSeconds) * 100 : 0;
 
   // Function to get higher quality thumbnail
   const getHighQualityThumbnail = (url: string) => url.replace('hqdefault', 'maxresdefault');
 
   const handleSelect = () => {
+    
+    setIsProcessing(true);
     onSelect(_id.$oid);
+    
+    // Simulating processing time
+    setTimeout(() => {
+      setIsProcessing(false);
+    }, 2000); 
   };
 
   return (
@@ -106,15 +113,15 @@ export default function CardDemo({ video, onSelect, isSelected }: CardDemoProps)
           className="absolute top-2 right-2 z-20 transition-all duration-300 ease-in-out" 
           onClick={handleSelect}
         >
-          {isSelected ? (
+          {isSelected ? (           
             <IconCircleCheckFilled 
-              className="text-blue-500"
-              size={28}
-            />
+            className="text-blue-500"
+            size={28}
+          />
           ) : (
             <IconCircleCheck 
-              className="text-gray-400 hover:text-gray-600"
-              size={28}
+            className={`${isProcessing ? 'text-blue-500' : 'text-gray-400 hover:text-gray-600'} ` }
+            size={28}
             />
           )}
         </div>

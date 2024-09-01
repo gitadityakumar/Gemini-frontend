@@ -1,9 +1,8 @@
-/* eslint-disable react/no-unescaped-entities */
 "use client"
 import React, { useState, useEffect } from 'react'
 import CardDemo from '@/components/blocks/cards-demo-2'
 import PageHeader from '@/components/ui/pageheader'
-import { Video,ApiResponse } from '@/types/video'
+import { Video, ApiResponse } from '@/types/video'
 
 const Page = () => {
   const [videos, setVideos] = useState<Video[]>([]);
@@ -42,13 +41,14 @@ const Page = () => {
     fetchVideos();
   }, []);
 
-  const handleVideoSelect = (video: Video) => {
+  const handleVideoSelect = (videoId: string) => {
     setSelectedVideos(prevSelected => {
       const newSelected = new Map(prevSelected);
-      if (newSelected.has(video._id.$oid)) {
-        newSelected.delete(video._id.$oid);
-      } else {
-        newSelected.set(video._id.$oid, video);
+      const video = videos.find(v => v._id.$oid === videoId);
+      if (newSelected.has(videoId)) {
+        newSelected.delete(videoId);
+      } else if (video) {
+        newSelected.set(videoId, video);
       }
       return newSelected;
     });
@@ -101,7 +101,7 @@ const Page = () => {
               </p>
             ) : (
               <p className="text-gray-600 dark:text-gray-400">
-                You haven't processed any videos yet. Start using our extension to collect data!
+                You haven&#39;t processed any videos yet. Start using our extension to collect data!
               </p>
             )}
           </div>
@@ -115,8 +115,8 @@ const Page = () => {
           <CardDemo
             key={video._id.$oid}
             video={video}
-            isSelected={selectedVideos.has(video._id.$oid)}
-            onSelect={() => handleVideoSelect(video)}
+            isSelected={(video._id.$oid)}
+            onSelect={handleVideoSelect}
           />
         ))}
       </div>
