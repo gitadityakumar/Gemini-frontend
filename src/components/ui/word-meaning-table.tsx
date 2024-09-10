@@ -31,20 +31,20 @@ export default function WordMeaningTable() {
   return (
     <Card className="w-full max-w-2xl mx-auto">
       <CardHeader>
-        {/* <CardTitle>Word and Meaning Table</CardTitle> */}
+        <CardTitle>Word and Meaning Table</CardTitle>
       </CardHeader>
       <CardContent>
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="text-center">Entry 1</TableHead>
-              <TableHead className="text-center">Entry 2</TableHead>
+              <TableHead className="w-1/2">Word</TableHead>
+              <TableHead className="w-1/2">Meaning</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            <TableRow>
-              {wordMeanings.map((item) => (
-                <TableCell key={item.id} className="p-2">
+            {wordMeanings.map((item) => (
+              <TableRow key={item.id}>
+                <TableCell className="p-2">
                   <Input
                     value={item.word}
                     onChange={(e) => handleEdit(item.id, 'word', e.target.value)}
@@ -52,11 +52,7 @@ export default function WordMeaningTable() {
                     className="w-full"
                   />
                 </TableCell>
-              ))}
-            </TableRow>
-            <TableRow>
-              {wordMeanings.map((item) => (
-                <TableCell key={item.id} className="p-2">
+                <TableCell className="p-2">
                   <Input
                     value={item.meaning}
                     onChange={(e) => handleEdit(item.id, 'meaning', e.target.value)}
@@ -64,8 +60,8 @@ export default function WordMeaningTable() {
                     className="w-full"
                   />
                 </TableCell>
-              ))}
-            </TableRow>
+              </TableRow>
+            ))}
           </TableBody>
         </Table>
       </CardContent>
