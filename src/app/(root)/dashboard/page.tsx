@@ -114,7 +114,7 @@ const Page = () => {
     }
 
     return (
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 ">
         {videos.map((video) => (
           <CardDemo
             key={video._id.$oid}
@@ -128,7 +128,7 @@ const Page = () => {
   };
 
   return (
-    <div className="flex flex-col bg-white h-full w-full overflow-hidden">
+    <div className="flex flex-col bg-white h-full w-full overflow-x-hidden">
       <div className="flex-shrink-0 p-4">
         <PageHeader
           onProcess={handleProcess}

@@ -1,5 +1,6 @@
 "use client"
 import React, { useState } from 'react';
+// import { VideoCard } from '@/components/ui/ProcessedVideoCard';
 import { VideoCard } from '@/components/ui/ProcessedVideoCard';
 import { groupVideosByMonth } from '@/lib/videoUtils';
 import { Video } from '@/types/processedVideoTypes';
@@ -32,6 +33,7 @@ export const MonthlyVideoGrid: React.FC<MonthlyVideoGridProps> = ({ videos }) =>
             <h2 className="text-2xl font-semibold mb-4 ">{month}</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
               {displayedVideos.map(video => (
+                // <VideoCard key={video.id} video={video} />
                 <VideoCard key={video.id} video={video} />
               ))}
             </div>

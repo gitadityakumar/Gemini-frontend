@@ -7,7 +7,7 @@ import { useToast } from "@/hooks/use-toast"
 export default function Header({ title = "Title" }: { title?: string }) {
    const { toast } = useToast()
   return (
-    <header className="bg-background border-b">
+    <header className=" border-b">
       <div className="container mx-auto px-4 py-4 flex justify-between items-center">
         <h1 className="text-2xl font-bold text-foreground">{title}</h1>
         <div className="space-x-2">

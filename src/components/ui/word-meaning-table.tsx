@@ -31,7 +31,7 @@ export default function WordMeaningTable() {
   return (
     <Card className="w-full max-w-2xl mx-auto">
       <CardHeader>
-        <CardTitle>Word and Meaning Table</CardTitle>
+        {/* <CardTitle>Word and Meaning Table</CardTitle> */}
       </CardHeader>
       <CardContent>
         <Table>

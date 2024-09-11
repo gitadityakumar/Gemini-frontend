@@ -30,11 +30,16 @@ const LandingPage = () => {
                 <path d="M180 10 L185 15 L180 20" stroke="url(#gradient)" strokeWidth="3" fill="none"/>
               </svg>
             </div>
-            <div className="space-x-4">
-              <Button variant="ghost">Features</Button>
-              <Button variant="ghost">Contact</Button>
-              <Button className="px-6 py-2 bg-transparent text-white border border-purple-500 rounded-md transition-all duration-300 ease-in-out transform hover:scale-110 hover:bg-purple-600 hover:text-white hover:border-transparent hover:shadow-neon" onClick={handleSignupButton}>Sign Up</Button>
-            </div>
+            <div className="flex flex-col sm:flex-row sm:space-x-4 space-y-2 sm:space-y-0">
+      <Button variant="ghost" className="hidden sm:inline-flex">Features</Button>
+      <Button variant="ghost" className="hidden sm:inline-flex">Contact</Button>
+      <Button 
+        className="px-6 py-2 bg-transparent text-white border border-purple-500 rounded-md transition-all duration-300 ease-in-out transform hover:scale-110 hover:bg-purple-600 hover:text-white hover:border-transparent hover:shadow-neon" 
+        onClick={handleSignupButton}
+      >
+        Sign Up
+      </Button>
+    </div>
           </nav>
         </header>
 

@@ -1,9 +1,100 @@
-import React from 'react'
 
-const Settings = () => {
+"use client"
+
+import { useState } from "react"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Switch } from "@/components/ui/switch"
+import { useToast } from "@/hooks/use-toast"
+import { Toaster } from "@/components/ui/toaster"
+import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
+
+export default function SettingsPage() {
+  const [activeService, setActiveService] = useState<"gemini" | "graq" | null>(null)
+  const { toast } = useToast()
+
+  const toggleService = (service: "gemini" | "graq") => {
+    if (activeService === service) {
+      setActiveService(null)
+    } else if (activeService === null) {
+      setActiveService(service)
+    } else {
+      toast({
+        title: "Error",
+        description: `Please deactivate ${activeService} before activating ${service}.`,
+        variant: "destructive",
+      })
+    }
+  }
+
   return (
-    <div> setting page</div>
+    <div className="w-screen bg-gradient-to-br from-blue-50 via-indigo-100 to-purple-100 p-8">
+      <header className="mb-8">
+        <h1 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600">
+          Settings
+        </h1>
+      </header>
+      <div className="grid gap-8 md:grid-cols-2">
+        <ServiceCard
+          title="Gemini"
+          description="Activate Gemini service"
+          isActive={activeService === "gemini"}
+          onToggle={() => toggleService("gemini")}
+        />
+        <ServiceCard
+          title="Graq"
+          description="Activate Graq service"
+          isActive={activeService === "graq"}
+          onToggle={() => toggleService("graq")}
+        />
+      </div>
+      <Toaster />
+    </div>
   )
 }
 
-export default Settings
+interface ServiceCardProps {
+  title: string
+  description: string
+  isActive: boolean
+  onToggle: () => void
+}
+
+function ServiceCard({ title, description, isActive, onToggle }: ServiceCardProps) {
+  const [apiKey, setApiKey] = useState("")
+
+  const handleSave = () => {
+    // save the API key
+    console.log(`Saving API key for ${title}: ${apiKey}`)
+    //  toast message to confirm
+  }
+
+  return (
+    <Card>
+      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+        <div>
+          <CardTitle className="text-2xl font-bold">{title}</CardTitle>
+          <CardDescription>{description}</CardDescription>
+        </div>
+        <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-2">
+            <div className={`w-3 h-3 rounded-full ${isActive ? 'bg-green-500' : 'bg-gray-300'} transition-colors duration-200`} />
+            <span className="text-sm">{isActive ? 'Active' : 'Inactive'}</span>
+          </div>
+          <Switch checked={isActive} onCheckedChange={onToggle} />
+        </div>
+      </CardHeader>
+      <CardContent className="space-y-4 pt-4">
+        <Input
+          type="text"
+          placeholder="Enter API Key"
+          value={apiKey}
+          onChange={(e) => setApiKey(e.target.value)}
+        />
+        <Button onClick={handleSave} className="w-full">
+          Save
+        </Button>
+      </CardContent>
+    </Card>
+  )
+}

@@ -2,6 +2,10 @@
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { Card, CardContent } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
+// import { CalendarIcon, Clock3Icon } from "lucide-react"
+import { IconCalendar,IconClockDown  } from '@tabler/icons-react';
 import { formatDate } from '@/lib/dateFormatting';
 
 interface VideoCardProps {
@@ -14,10 +18,10 @@ interface VideoCardProps {
   }
 }
 
-export const VideoCard: React.FC<VideoCardProps> = ({ video }) => {
+export function VideoCard({ video }: VideoCardProps) {
   return (
-    <Link href={`/processed/${video.id}`} className="block w-full">
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden transition-transform duration-300 ease-in-out hover:scale-105 h-full">
+    <Link href={`/processed/${video.id}`} className="block w-full max-w-sm">
+      <Card className="overflow-hidden transition-all duration-300 transform hover:scale-105 hover:shadow-lg h-full">
         <div className="relative aspect-video">
           <Image
             src={video.thumbnailUrl}
@@ -25,17 +29,19 @@ export const VideoCard: React.FC<VideoCardProps> = ({ video }) => {
             layout="fill"
             objectFit="cover"
           />
-          <div className="absolute bottom-2 right-2 bg-black bg-opacity-70 text-white text-xs px-2 py-1 rounded">
+          <Badge className="absolute bottom-2 right-2 bg-black bg-opacity-70 text-white">
+            <IconClockDown  className="w-4 h-4 mr-1" />
             {video.duration}
+          </Badge>
+        </div>
+        <CardContent className="p-4">
+          <h5 className="text-lg font-semibold line-clamp-2 mb-1">{video.title}</h5>
+          <div className="flex items-center text-sm text-muted-foreground mb-2">
+            <IconCalendar className="w-4 h-4 mr-1" />
+            <span>Processed on: {formatDate(video.processingDate)}</span>
           </div>
-        </div>
-        <div className="p-3">
-          <h3 className="text-sm font-semibold mb-1 line-clamp-2">{video.title}</h3>
-          <p className="text-xs text-gray-600 dark:text-gray-400">
-            Processed on: {formatDate(video.processingDate)}
-          </p>
-        </div>
-      </div>
+        </CardContent>
+      </Card>
     </Link>
   );
-};
+}
