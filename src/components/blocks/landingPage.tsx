@@ -68,7 +68,7 @@ const LandingPage = () => {
             </div>
           </div>
 
-          <div className="mt-12 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="mt-12 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4 ">
             <FeatureCard
               icon={<IconBrowserPlus size={32} />}
               title="Chrome Extension"
@@ -102,7 +102,7 @@ const LandingPage = () => {
 //@ts-ignore
 const FeatureCard = ({ icon, title, description }) => {
   return (
-    <div className="relative p-6 border border-gray-800 rounded-lg hover:border-gray-700 transition-colors duration-300">
+    <div className="relative  p-6 border border-gray-800 rounded-lg hover:border-gray-700 transition-colors duration-300">
       <div className="absolute -inset-px bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300" aria-hidden="true"></div>
       <div className="relative flex flex-col h-full">
         <div className="flex items-center justify-center w-12 h-12 bg-gray-900 rounded-full mb-4">

@@ -1,9 +1,25 @@
 "use client";
 import { cn } from "@/lib/utils";
 import Link, { LinkProps } from "next/link";
-import React, { useState, createContext, useContext } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import React, { useState, createContext, useContext, useCallback } from "react";
+import { AnimatePresence, motion,isMotionValue  } from "framer-motion";
 import { IconMenu2, IconX } from "@tabler/icons-react";
+
+interface MobileSidebarProps extends React.ComponentProps<"div"> {
+  className?: string;
+  children: React.ReactNode;
+}
+//@ts-ignore
+const MobileSidebarWrapper = (props) => {
+  // Destructure the children prop and filter out MotionValue
+  const { children, ...restProps } = props;
+
+  const filteredChildren = React.Children.map(children, (child) =>
+    isMotionValue(child) ? null : child // Skip MotionValue children
+  );
+
+  return <MobileSidebar {...restProps}>{filteredChildren}</MobileSidebar>;
+};
 
 interface Links {
   label: string;
@@ -75,7 +91,7 @@ export const SidebarBody = (props: React.ComponentProps<typeof motion.div>) => {
   return (
     <>
       <DesktopSidebar {...props} />
-      <MobileSidebar {...(props as React.ComponentProps<"div">)} />
+      <MobileSidebarWrapper {...props} />
     </>
   );
 };
@@ -106,25 +122,37 @@ export const DesktopSidebar = ({
   );
 };
 
-export const MobileSidebar = ({
+
+export const MobileSidebar: React.FC<MobileSidebarProps> = ({
   className,
   children,
   ...props
-}: React.ComponentProps<"div">) => {
+}) => {
   const { open, setOpen } = useSidebar();
+
+  const handleClose = useCallback(() => {
+    setOpen(false);
+  }, [setOpen]);
+
+  const handleToggle = useCallback(() => {
+    setOpen(!open);
+  }, [open, setOpen]);
+
   return (
     <>
       <div
         className={cn(
-          "h-10 px-4 py-4 flex flex-row md:hidden  items-center justify-between bg-neutral-100 dark:bg-neutral-800 w-full"
+          "h-10 px-4 py-4 flex flex-row md:hidden items-center justify-between bg-neutral-100 dark:bg-neutral-800 w-full"
         )}
         {...props}
       >
         <div className="flex justify-end z-20 w-full">
-          <IconMenu2
-            className="text-neutral-800 dark:text-neutral-200"
-            onClick={() => setOpen(!open)}
-          />
+          <button
+            onClick={handleToggle}
+            className="bg-transparent border-none cursor-pointer p-0"
+          >
+            <IconMenu2 className="text-neutral-800 dark:text-neutral-200" />
+          </button>
         </div>
         <AnimatePresence>
           {open && (
@@ -141,13 +169,23 @@ export const MobileSidebar = ({
                 className
               )}
             >
-              <div
-                className="absolute right-10 top-10 z-50 text-neutral-800 dark:text-neutral-200"
-                onClick={() => setOpen(!open)}
+              <button
+                className="absolute right-10 top-10 z-50 text-neutral-800 dark:text-neutral-200 bg-transparent border-none cursor-pointer p-0"
+                onClick={handleClose}
               >
                 <IconX />
-              </div>
-              {children}
+              </button>
+
+              {React.Children.map(children, (child) =>
+                React.isValidElement(child) ? (
+                  React.cloneElement(child as React.ReactElement<any>, {
+                    onClick: handleClose,
+                  })
+                ) : (
+                  // If the child is not a valid React element, return it as is or skip it
+                  child
+                )
+              )}
             </motion.div>
           )}
         </AnimatePresence>
@@ -159,20 +197,26 @@ export const MobileSidebar = ({
 export const SidebarLink = ({
   link,
   className,
+  textClassName,
   ...props
 }: {
-  link: Links & { component?: React.ReactNode }; // Allow a custom component
+  link: Links & { component?: React.ReactNode };
   className?: string;
-  props?: Omit<LinkProps, 'href'>; // Ensure href is omitted from LinkProps if not present
+  textClassName?: string;
+  props?: Omit<LinkProps, 'href'>;
 }) => {
   const { open, animate } = useSidebar();
 
-  // Render custom component if provided
+  const textClasses = cn(
+    "text-neutral-700 dark:text-neutral-200 text-sm group-hover/sidebar:translate-x-1 transition duration-150 whitespace-pre inline-block !p-0 !m-0",
+    textClassName
+  );
+
   if (link.component) {
     return (
       <div
         className={cn(
-          "flex items-center justify-start gap-2  group/sidebar py-2",
+          "flex items-center justify-start gap-2 group/sidebar py-2",
           className
         )}
         {...props}
@@ -183,7 +227,7 @@ export const SidebarLink = ({
             display: animate ? (open ? "inline-block" : "none") : "inline-block",
             opacity: animate ? (open ? 1 : 0) : 1,
           }}
-          className="text-neutral-700 dark:text-neutral-200 text-sm group-hover/sidebar:translate-x-1 transition duration-150 whitespace-pre inline-block !p-0 !m-0"
+          className={textClasses}
         >
           {link.component}
         </motion.div>
@@ -191,12 +235,11 @@ export const SidebarLink = ({
     );
   }
 
-  // Render a standard link if href is provided
   return link.href ? (
     <Link
       href={link.href}
       className={cn(
-        "flex items-center justify-start gap-2  group/sidebar py-2",
+        "flex items-center justify-start gap-2 group/sidebar py-2",
         className
       )}
       {...props}
@@ -207,11 +250,10 @@ export const SidebarLink = ({
           display: animate ? (open ? "inline-block" : "none") : "inline-block",
           opacity: animate ? (open ? 1 : 0) : 1,
         }}
-        className="text-neutral-700 dark:text-neutral-200 text-sm group-hover/sidebar:translate-x-1 transition duration-150 whitespace-pre inline-block !p-0 !m-0"
+        className={textClasses}
       >
         {link.label}
       </motion.span>
     </Link>
   ) : null;
 };
-

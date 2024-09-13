@@ -5,7 +5,9 @@ import {
   IconArrowLeft,
   IconBrandTabler,
   IconSettings,
-  IconCpu 
+  IconCpu ,
+  IconSquareLetterQ ,
+  IconUserCircle 
 } from "@tabler/icons-react";
 import Link from "next/link";
 import { motion } from "framer-motion";
@@ -13,6 +15,7 @@ import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import CustomSignOutButton from "@/components/blocks/CustomSignOutButton";
 import { useUser } from "@clerk/nextjs";
+
 
 
 
@@ -75,19 +78,29 @@ export default function Layout({ children }: Readonly<{children: ReactNode}>) {
                 <SidebarLink key={idx} link={link} />
               ))}
             </div>
+            
           </div>
           <div>
           <SidebarLink
-              link={{
-             label: `${fullName}`,
-            href: "/#",
-             }}
-             className="items-center "
-             >
- 
-</SidebarLink>
-
-
+            link={{
+              label: "    Quota",
+              href: "/#",
+              
+              }}
+  className="backdrop-blur-sm bg-white/20 p-3 mb-4 rounded-full border border-white/30 shadow-lg hover:bg-white/30 transition-all duration-300 "
+  textClassName="text-transparent   bg-clip-text bg-gradient-to-r from-blue-400 to-purple-600"
+>
+          </SidebarLink>
+          <SidebarLink
+            link={{
+              label: `${fullName}`,
+              href: "/#",
+              
+              }}
+  className="backdrop-blur-sm bg-white/20 p-3 rounded-full border border-white/30 shadow-lg hover:bg-white/30 transition-all duration-300 "
+  textClassName="text-transparent  bg-clip-text bg-gradient-to-r from-blue-400 to-purple-600"
+>
+          </SidebarLink>       
           </div>
         </SidebarBody>
       </Sidebar>
