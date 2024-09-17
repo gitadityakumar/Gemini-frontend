@@ -5,7 +5,7 @@ import { IconBrandNotion, IconDeviceFloppy
 import { useToast } from "@/hooks/use-toast"
 
 export default function Header({ title = "Title" }: { title?: string }) {
-   const { toast } = useToast()
+   const { toast } = useToast();
   return (
     <header className=" border-b">
       <div className="container mx-auto px-4 py-4 flex justify-between items-center">
@@ -14,7 +14,7 @@ export default function Header({ title = "Title" }: { title?: string }) {
           <Button variant="default" size="sm"
           onClick={() => {
           toast({
-          
+          title:"Success 👍",
           description: "Export was successful !",
           })
       }}>
@@ -24,7 +24,8 @@ export default function Header({ title = "Title" }: { title?: string }) {
           <Button variant="outline" size="sm"
            onClick={() => {
             toast({
-              description: "Saved was successful.",
+              title:"Success 👍",
+              description: "Saved was successful !",
             })
           }}
            >

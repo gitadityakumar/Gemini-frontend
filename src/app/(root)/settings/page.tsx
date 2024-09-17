@@ -20,7 +20,7 @@ export default function SettingsPage() {
       setActiveService(service)
     } else {
       toast({
-        title: "Error",
+        title: "Error 😐",
         description: `Please deactivate ${activeService} before activating ${service}.`,
         variant: "destructive",
       })

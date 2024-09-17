@@ -3,8 +3,13 @@ import React, { useState, useEffect } from 'react'
 import CardDemo from '@/components/blocks/cards-demo-2'
 import PageHeader from '@/components/ui/pageheader'
 import { Video, ApiResponse } from '@/types/video'
+import { toast } from '@/hooks/use-toast'
+import { Toaster } from "@/components/ui/toaster"
+import { ToastAction } from '@/components/ui/toast'
+
 
 const Page = () => {
+
   const [videos, setVideos] = useState<Video[]>([]);
   const [selectedVideos, setSelectedVideos] = useState(new Map<string, Video>());
   const [isProcessing, setIsProcessing] = useState(false);
@@ -56,7 +61,12 @@ const Page = () => {
 
   const handleProcess = () => {
     if(Array.from(selectedVideos.values()).length==0){
-      alert("Please select at least one video to process");
+      // alert("Please select at least one video to process");
+      toast({
+        title: "Uh oh! 😳",
+        description: `Please select at least one video to process`,
+        action: <ToastAction altText="Try again">Try again</ToastAction>,
+      })
       return;
     }
     setIsProcessing(true);
@@ -141,6 +151,7 @@ const Page = () => {
           {renderContent()}
         </div>
       </div>
+      <Toaster/>
     </div>
   )
 }

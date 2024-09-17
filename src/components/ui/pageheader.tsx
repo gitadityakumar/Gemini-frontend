@@ -1,6 +1,7 @@
 import React from 'react';
 import Image from 'next/image';
 import { useUser } from "@clerk/nextjs";
+import { useToast } from '@/hooks/use-toast';
 
 interface PageHeaderProps {
   onProcess: () => void;
@@ -9,6 +10,7 @@ interface PageHeaderProps {
 
 const PageHeader: React.FC<PageHeaderProps> = ({ onProcess, isProcessing }) => {
   const { user, isLoaded } = useUser();
+  const { toast } = useToast()
 
   // Function to generate a random color
   const getRandomColor = () => {
