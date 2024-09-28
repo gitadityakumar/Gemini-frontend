@@ -8,24 +8,30 @@ import { useToast } from "@/hooks/use-toast"
 import { Toaster } from "@/components/ui/toaster"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
+import { useRecoilState } from 'recoil';
+import { modeState,activeServiceState } from '@/app/recoilContextProvider';
 
 export default function SettingsPage() {
-  const [activeService, setActiveService] = useState<"gemini" | "graq" | null>(null)
+  const [activeService, setActiveService] = useRecoilState(activeServiceState);
+  const [mode,setMode] = useRecoilState(modeState);
   const { toast } = useToast()
 
-  const toggleService = (service: "gemini" | "graq") => {
+  const toggleService = (service: "gemini" | "graq" | null) => {
     if (activeService === service) {
-      setActiveService(null)
+      setActiveService(null);  
+      setMode("public");      
     } else if (activeService === null) {
-      setActiveService(service)
+      setActiveService(service);
+      setMode("private");     
     } else {
       toast({
         title: "Error 😐",
         description: `Please deactivate ${activeService} before activating ${service}.`,
         variant: "destructive",
-      })
+      });
     }
-  }
+  };
+  
 
   return (
     <div className="w-screen bg-gradient-to-br from-blue-50 via-indigo-100 to-purple-100 p-8">

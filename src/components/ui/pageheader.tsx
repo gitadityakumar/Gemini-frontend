@@ -1,7 +1,8 @@
 import React from 'react';
 import Image from 'next/image';
 import { useUser } from "@clerk/nextjs";
-import { useToast } from '@/hooks/use-toast';
+import RecoidContextProvider, { modeState } from '@/app/recoilContextProvider';
+import { useRecoilState } from 'recoil';
 
 interface PageHeaderProps {
   onProcess: () => void;
@@ -10,7 +11,9 @@ interface PageHeaderProps {
 
 const PageHeader: React.FC<PageHeaderProps> = ({ onProcess, isProcessing }) => {
   const { user, isLoaded } = useUser();
-  const { toast } = useToast()
+
+  const [mode] = useRecoilState(modeState);
+  
 
   // Function to generate a random color
   const getRandomColor = () => {
@@ -44,8 +47,20 @@ const PageHeader: React.FC<PageHeaderProps> = ({ onProcess, isProcessing }) => {
           <h1 className="text-xl font-bold text-gray-800">{fullName}</h1>
           <h3 className="text-sm text-gray-600">Watch History</h3>
         </div>
+        
       </div>
-      <div className="text-gray-600">
+      <div className="text-gray-600 flex flex-row items-center">
+      <div className="text-xl text-center font-semibold rounded-lg p-2 mr-4">
+  Mode: 
+  {mode === 'private' ? (
+    <span className="text-teal-400 ml-2">Private</span>
+  ) : (
+    <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-600 ml-2">
+      Public
+    </span>
+  )}
+</div>
+
         <button 
           type="button" 
           className={`text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center ${isProcessing ? 'opacity-50 cursor-not-allowed' : ''}`}
@@ -59,8 +74,9 @@ const PageHeader: React.FC<PageHeaderProps> = ({ onProcess, isProcessing }) => {
             </svg>
           ) : null}
           {isProcessing ? 'Processing...' : 'Process'}
-        </button>
+        </button> 
       </div>
+      
     </header>
   );
 };
