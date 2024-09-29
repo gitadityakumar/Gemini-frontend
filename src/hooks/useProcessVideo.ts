@@ -1,25 +1,33 @@
+import { activeServiceState, modeState } from '@/app/recoilContextProvider';
+import { Video } from '@/types/video';
 import { useState } from 'react';
+import { useRecoilState } from 'recoil';
+require('dotenv').config();
 
- export const useProcessVideo = (selectedVideo: any, token: string) => {
+const uri = process.env.NEXT_PUBLIC_SECONDRY_BACKEND_URL;
+ export const useProcessVideo = ( token: string) => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [progress, setProgress] = useState<number | null>(null);
+  const [mode] = useRecoilState(modeState);
+  const [model] = useRecoilState(activeServiceState);
 
-  const processVideo = async () => {
-    if (!selectedVideo) return;
+  const processVideo = async (selectedVideos: Video[]) => {
+    if (!selectedVideos) return;
 
     setIsProcessing(true);
 
     try {
       // Send the request to start processing
-      const response = await fetch('/api/start-processing', {
+      const response = await fetch(`${uri}/api/v1/processVideo`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
-          videoData: selectedVideo,
-          usage: 'public', // Or 'private', based on user selection
+          videoData: selectedVideos,
+          usage:mode,
+          model:model // Or 'private', based on user selection
         }),
       });
 
@@ -40,7 +48,7 @@ import { useState } from 'react';
   const pollProgress = (jobId: string) => {
     const intervalId = setInterval(async () => {
       try {
-        const progressResponse = await fetch(`/api/progress/${jobId}`, {
+        const progressResponse = await fetch(`${uri}/api/v1/jobStatus/${jobId}`, {
           method: 'GET',
           headers: {
             Authorization: `Bearer ${token}`,

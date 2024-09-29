@@ -1,7 +1,7 @@
 import React from 'react';
 import Image from 'next/image';
 import { useUser } from "@clerk/nextjs";
-import RecoidContextProvider, { modeState } from '@/app/recoilContextProvider';
+import  { modeState } from '@/app/recoilContextProvider';
 import { useRecoilState } from 'recoil';
 
 interface PageHeaderProps {

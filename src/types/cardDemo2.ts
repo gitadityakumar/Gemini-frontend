@@ -1,4 +1,4 @@
- export interface Video {
+export interface Video {
   _id: string;
   userId: string;
   url: string;
@@ -12,8 +12,9 @@
   title: string;
 }
 
-export interface ApiResponse {
-  videos?: Video[];
-  message?: string;
-  hasExtension?: boolean;
+
+export interface CardDemoProps {
+  video: Video;
+  onSelect: (id: string) => void;
+   isSelected: boolean;
 }

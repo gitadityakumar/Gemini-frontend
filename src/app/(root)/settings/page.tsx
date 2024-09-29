@@ -79,7 +79,7 @@ function ServiceCard({ title, description, isActive, onToggle }: ServiceCardProp
     <Card>
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <div>
-          <CardTitle className="text-2xl font-bold">{title}</CardTitle>
+          <CardTitle className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 from-5% via-purple-600 via-40% to-pink-400 to to-80%">{title}</CardTitle>
           <CardDescription>{description}</CardDescription>
         </div>
         <div className="flex items-center space-x-4">

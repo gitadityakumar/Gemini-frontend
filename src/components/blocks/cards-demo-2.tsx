@@ -4,30 +4,12 @@ import { cn } from "@/lib/utils";
 import Image from "next/image";
 import Link from 'next/link';
 import { IconCircleCheck, IconCircleCheckFilled } from '@tabler/icons-react';
+import { CardDemoProps } from "@/types/cardDemo2";
 
-interface Video {
-  _id: { $oid: string };
-  userId: string;
-  url: string;
-  channelAvatar: string;
-  channelName: string;
-  duration: string;
-  lastUpdated: { $date: string };
-  playtime: number;
-  processed: boolean;
-  thumbnailUrl: string;
-  title: string;
-}
 
-interface CardDemoProps {
-  video: Video;
-  onSelect: (id: string) => void;
-  // isSelected: String;
-}
-
-export default function CardDemo({ video, onSelect }: CardDemoProps) {
+export default function CardDemo({ video, onSelect, isSelected  }: CardDemoProps) {
   const [isProcessing, setIsProcessing] = useState(false);
-  const [isSelected, setIsSelected] = useState(false);
+  //  const [isSelected, setIsSelected] = useState(false);
   const {
     _id,
     channelName,
@@ -43,20 +25,22 @@ export default function CardDemo({ video, onSelect }: CardDemoProps) {
   const totalSeconds = duration.split(':').reduce((acc, time) => (60 * acc) + parseInt(time, 10), 0);
   const progressPercentage = totalSeconds > 0 ? (playtime / totalSeconds) * 100 : 0;
 
-  // Function to get higher quality thumbnail
   const getHighQualityThumbnail = (url: string) => url.replace('hqdefault', 'maxresdefault');
 
   const handleSelect = () => {
-    setIsSelected(prevState => !prevState);
-    setIsProcessing(true);
-    onSelect(_id.$oid);
-    
-    // Simulating processing time
-    setTimeout(() => {
-      setIsProcessing(false);
-      setIsSelected(false);
-    }, 2000); 
+    // console.log("CardDemo: handleSelect called for video:", video);
+    if (video && video._id) {
+      // console.log("CardDemo: Calling onSelect with:", video._id);
+      onSelect(video._id);
+    } else {
+      console.error("CardDemo: Invalid video object structure:", JSON.stringify(video, null, 2));
+    }
   };
+
+  if (!video) {
+    console.error("CardDemo: Received undefined video");
+    return null; 
+  }
 
   return (
     <div className="max-w-xs w-full group/card mt-2">
