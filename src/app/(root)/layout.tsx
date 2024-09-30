@@ -84,7 +84,7 @@ export default function Layout({ children }: Readonly<{children: ReactNode}>) {
           <SidebarLink
             link={{
               label: "    Quota",
-              href: "/#",
+              href: "#",
               
               }}
   className="backdrop-blur-sm bg-white/20 p-3 mb-4 rounded-full border border-white/30 shadow-lg hover:bg-white/30 transition-all duration-300 "
@@ -94,7 +94,7 @@ export default function Layout({ children }: Readonly<{children: ReactNode}>) {
           <SidebarLink
             link={{
               label: `${fullName}`,
-              href: "/#",
+              href: "#",
               
               }}
   className="backdrop-blur-sm bg-white/20 p-3 rounded-full border border-white/30 shadow-lg hover:bg-white/30 transition-all duration-300 "

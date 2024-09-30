@@ -7,6 +7,11 @@ import { toast } from "@/hooks/use-toast";
 import { Toaster } from "@/components/ui/toaster";
 import { useProcessVideo } from "@/hooks/useProcessVideo"; 
 import { ToastAction } from "@radix-ui/react-toast";
+import { modeState } from "@/app/recoilContextProvider";
+import { useRecoilState } from "recoil";
+
+
+
 
 const Page = () => {
   const [videos, setVideos] = useState<Video[]>([]);
@@ -14,6 +19,7 @@ const Page = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [hasExtension, setHasExtension] = useState<boolean | null>(null);
+  const [mode] = useRecoilState(modeState);
 
   // Token can be fetched from your auth context
   const token = "<your_token_here>"; 
@@ -57,9 +63,47 @@ const Page = () => {
   const handleVideoSelect = (videoId: string) => {
     setSelectedVideoId(prevSelected => {
       const newSelected = prevSelected === videoId ? null : videoId;
+  
+      // Find the video based on the newly selected ID
+      const video = videos.find(video => video._id === newSelected);
+      const videoDuration = video?.duration;
+      if(mode=="public"){
+      if (videoDuration) {
+        const durationInMs = parseDuration(videoDuration);
+        // console.log(`Parsed duration (in ms): ${durationInMs}`); 
+        if (durationInMs > 15 * 60 * 1000) {
+          toast({
+            title: "Uh oh! 😳",
+            description: "To long to process,Please switch to private mode.",
+            variant: "destructive",
+            duration:1000,
+             action: <ToastAction altText="Try again">Select again</ToastAction>
+          });
+        }
+      }
+    }
       return newSelected;
     });
   };
+  
+  // Function to parse duration from formats like "HH:MM:SS" or "MM:SS"
+  const parseDuration = (durationString: string): number => {
+    if (!durationString) return 0; 
+    const parts = durationString.split(":").map(Number);
+    let hours = 0, minutes = 0, seconds = 0;
+    if (parts.length === 3) {
+      // Format is "HH:MM:SS"
+      [hours, minutes, seconds] = parts;
+    } else if (parts.length === 2) {
+      // Format is "MM:SS"
+      [minutes, seconds] = parts;
+    }
+  
+    const totalMilliseconds = (hours * 60 * 60 + minutes * 60 + seconds) * 1000;
+    // console.log(`Duration string: ${durationString}, Parsed: ${hours}h ${minutes}m ${seconds}s`);
+    return totalMilliseconds;
+  };
+  
   
 
   // Trigger the video processing
