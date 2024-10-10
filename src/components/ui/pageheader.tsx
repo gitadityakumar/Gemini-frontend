@@ -7,14 +7,13 @@ import { useRecoilState } from 'recoil';
 interface PageHeaderProps {
   onProcess: () => void;
   isProcessing: boolean;
+  progress:number | null;
 }
 
-const PageHeader: React.FC<PageHeaderProps> = ({ onProcess, isProcessing }) => {
+const PageHeader: React.FC<PageHeaderProps> = ({ onProcess, isProcessing,progress }) => {
   const { user, isLoaded } = useUser();
-
   const [mode] = useRecoilState(modeState);
   
-
   // Function to generate a random color
   const getRandomColor = () => {
     const letters = '0123456789ABCDEF';
@@ -28,8 +27,6 @@ const PageHeader: React.FC<PageHeaderProps> = ({ onProcess, isProcessing }) => {
   // Placeholder data for unauthenticated users
   const placeholderImageUrl = `https://via.placeholder.com/48x48/${getRandomColor().slice(1)}/FFFFFF?text=?`;
   const placeholderName = "Guest User";
-
-  // Use actual user data if available, otherwise use placeholder data
   const imageUrl = isLoaded && user ? user.imageUrl : placeholderImageUrl;
   const fullName = isLoaded && user ? user.fullName : placeholderName;
 

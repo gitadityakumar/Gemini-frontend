@@ -11,8 +11,6 @@ import { modeState } from "@/app/recoilContextProvider";
 import { useRecoilState } from "recoil";
 
 
-
-
 const Page = () => {
   const [videos, setVideos] = useState<Video[]>([]);
   const [selectedVideoId, setSelectedVideoId] = useState<string | null>(null);
@@ -77,7 +75,7 @@ const Page = () => {
             description: "To long to process,Please switch to private mode.",
             variant: "destructive",
             duration:1000,
-             action: <ToastAction altText="Try again">Select again</ToastAction>
+            action: <ToastAction altText="Try again">Select again</ToastAction>
           });
         }
       }
@@ -104,10 +102,8 @@ const Page = () => {
     return totalMilliseconds;
   };
   
-  
-
   // Trigger the video processing
- const handleProcess = () => {
+const handleProcess = () => {
     if (!selectedVideoId) {
       toast({
         title: "Uh oh! 😳",
@@ -192,6 +188,7 @@ const Page = () => {
         <PageHeader
           onProcess={handleProcess}
           isProcessing={isProcessing} 
+          progress={progress}
         />
       </div>
 

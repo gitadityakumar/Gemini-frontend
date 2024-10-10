@@ -8,6 +8,7 @@ const uri = process.env.NEXT_PUBLIC_SECONDRY_BACKEND_URL;
  export const useProcessVideo = ( token: string) => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [progress, setProgress] = useState<number | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const [mode] = useRecoilState(modeState);
   const [model] = useRecoilState(activeServiceState);
 
@@ -15,6 +16,7 @@ const uri = process.env.NEXT_PUBLIC_SECONDRY_BACKEND_URL;
     if (!selectedVideos) return;
 
     setIsProcessing(true);
+    setError(null);
 
     try {
       // Send the request to start processing
@@ -39,8 +41,10 @@ const uri = process.env.NEXT_PUBLIC_SECONDRY_BACKEND_URL;
       } else {
         // Handle error
         console.error('Failed to process video');
+        setError("Failded to process video");
       }
     } catch (error) {
+      setError('Error processing Video');
       console.error('Error processing video:', error);
     }
   };
@@ -63,13 +67,18 @@ const uri = process.env.NEXT_PUBLIC_SECONDRY_BACKEND_URL;
           if (progress >= 100) {
             clearInterval(intervalId);
             setIsProcessing(false);
+          }else{
+          const message = await progressResponse.text();
+          setError(`${message}`);
+          console.error('Failed to fetch job status:', message);
           }
         }
       } catch (error) {
+        setError('Error fetching progress')
         console.error('Error fetching progress:', error);
       }
     }, 2000); // Poll every 2 seconds
   };
 
-  return { isProcessing, progress, processVideo };
+  return { isProcessing, progress, processVideo ,error};
 };
