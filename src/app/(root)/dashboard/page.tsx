@@ -23,9 +23,31 @@ const Page = () => {
   const token = "<your_token_here>"; 
   
   // Process the selected videos
-  const { isProcessing, progress, processVideo } = useProcessVideo( 
+  const { isProcessing, progress, processVideo,hookError } = useProcessVideo( 
     token
   );
+  
+  useEffect(() => {
+    if (hookError) {
+      toast({
+        title: "Error",
+        description: hookError, // Display the error message from hookError
+        variant: "destructive",
+        action: <ToastAction altText="Try again">Try again</ToastAction>,
+      });
+    }
+  }, [hookError]);
+
+  useEffect(() => {
+    if (progress === 100) {
+      toast({
+        title: "Success 👍👍", // or "Confirmation"
+        description: "Video has been processed", 
+        variant: "default",
+      });
+    }
+  }, [progress]);
+  
 
   // Fetch videos from the backend
   useEffect(() => {
@@ -103,23 +125,25 @@ const Page = () => {
   };
   
   // Trigger the video processing
-const handleProcess = () => {
+  const handleProcess = async (): Promise<void> => {
     if (!selectedVideoId) {
       toast({
         title: "Uh oh! 😳",
         description: `Please select a video to process`,
         action: <ToastAction altText="Try again">Try again</ToastAction>,
       });
-      return;
+   
+      return Promise.resolve();  // Return a resolved Promise since the function expects a Promise
     }
-
+  
     const selectedVideo = videos.find(video => video._id === selectedVideoId);
     if (selectedVideo) {
-      processVideo([selectedVideo]);
+      await processVideo([selectedVideo]);  // Assuming processVideo is an async function
     } else {
       console.error("Selected video not found in videos array");
     }
   };
+  
   const renderContent = () => {
     if (error) {
       return (
@@ -189,6 +213,7 @@ const handleProcess = () => {
           onProcess={handleProcess}
           isProcessing={isProcessing} 
           progress={progress}
+          // hookError={hookError!}
         />
       </div>
 

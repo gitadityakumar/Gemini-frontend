@@ -5,10 +5,11 @@ import { useRecoilState } from 'recoil';
 require('dotenv').config();
 
 const uri = process.env.NEXT_PUBLIC_SECONDRY_BACKEND_URL;
- export const useProcessVideo = ( token: string) => {
+
+export const useProcessVideo = (token: string) => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [progress, setProgress] = useState<number | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [hookError, setHookError] = useState<string | null>(null);
   const [mode] = useRecoilState(modeState);
   const [model] = useRecoilState(activeServiceState);
 
@@ -16,7 +17,7 @@ const uri = process.env.NEXT_PUBLIC_SECONDRY_BACKEND_URL;
     if (!selectedVideos) return;
 
     setIsProcessing(true);
-    setError(null);
+    setHookError(null); // Reset hookError before processing
 
     try {
       // Send the request to start processing
@@ -28,8 +29,8 @@ const uri = process.env.NEXT_PUBLIC_SECONDRY_BACKEND_URL;
         },
         body: JSON.stringify({
           videoData: selectedVideos,
-          usage:mode,
-          model:model // Or 'private', based on user selection
+          usage: mode,
+          model: model, // Or 'private', based on user selection
         }),
       });
 
@@ -39,13 +40,15 @@ const uri = process.env.NEXT_PUBLIC_SECONDRY_BACKEND_URL;
         // Poll the server for job progress
         pollProgress(jobId);
       } else {
-        // Handle error
+        // Handle error if the initial process request fails
+        setHookError('Failed to process video');
         console.error('Failed to process video');
-        setError("Failded to process video");
+        setIsProcessing(false); // Stop processing on failure
       }
     } catch (error) {
-      setError('Error processing Video');
+      setHookError('Error processing video');
       console.error('Error processing video:', error);
+      setIsProcessing(false); // Ensure processing stops
     }
   };
 
@@ -60,25 +63,29 @@ const uri = process.env.NEXT_PUBLIC_SECONDRY_BACKEND_URL;
         });
 
         if (progressResponse.ok) {
-          const { progress } = await progressResponse.json();
+          const { progress,status,error } = await progressResponse.json();
           setProgress(progress);
 
           // If the progress reaches 100%, stop polling
-          if (progress >= 100) {
-            clearInterval(intervalId);
-            setIsProcessing(false);
-          }else{
-          const message = await progressResponse.text();
-          setError(`${message}`);
-          console.error('Failed to fetch job status:', message);
-          }
+              if (progress >= 100) {
+                clearInterval(intervalId);
+                setIsProcessing(false); // Stop the processing flag when done
+              }
+        } else {
+          // Handle non-OK progress response
+          const message = await progressResponse.json();
+          setHookError(`Failed to fetch job status: ${message.error} `);
+          clearInterval(intervalId); // Stop polling if there's an error
+          setIsProcessing(false); // Stop processing on error
         }
       } catch (error) {
-        setError('Error fetching progress')
+        setHookError('Error fetching progress');
         console.error('Error fetching progress:', error);
+        clearInterval(intervalId); // Stop polling on fetch failure
+        setIsProcessing(false); // Stop processing on error
       }
     }, 2000); // Poll every 2 seconds
   };
 
-  return { isProcessing, progress, processVideo ,error};
+  return { isProcessing, progress, processVideo, hookError };
 };

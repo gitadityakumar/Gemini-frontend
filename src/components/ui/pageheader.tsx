@@ -1,16 +1,18 @@
 import React from 'react';
 import Image from 'next/image';
 import { useUser } from "@clerk/nextjs";
-import  { modeState } from '@/app/recoilContextProvider';
+import { modeState } from '@/app/recoilContextProvider';
 import { useRecoilState } from 'recoil';
+import CustomComponent from './customComponent';
 
 interface PageHeaderProps {
-  onProcess: () => void;
+  onProcess: () => Promise<void>; // Changed to Promise<void> to match CustomComponent
   isProcessing: boolean;
-  progress:number | null;
+  progress: number | null;
+  // hookError:string;
 }
 
-const PageHeader: React.FC<PageHeaderProps> = ({ onProcess, isProcessing,progress }) => {
+const PageHeader: React.FC<PageHeaderProps> = ({ onProcess, isProcessing, progress }) => {
   const { user, isLoaded } = useUser();
   const [mode] = useRecoilState(modeState);
   
@@ -44,36 +46,27 @@ const PageHeader: React.FC<PageHeaderProps> = ({ onProcess, isProcessing,progres
           <h1 className="text-xl font-bold text-gray-800">{fullName}</h1>
           <h3 className="text-sm text-gray-600">Watch History</h3>
         </div>
-        
       </div>
       <div className="text-gray-600 flex flex-row items-center">
-      <div className="text-xl text-center font-semibold rounded-lg p-2 mr-4">
-  Mode: 
-  {mode === 'private' ? (
-    <span className="text-teal-400 ml-2">Private</span>
-  ) : (
-    <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-600 ml-2">
-      Public
-    </span>
-  )}
-</div>
+        <div className="text-xl text-center font-semibold rounded-lg p-2 mr-4">
+          Mode: 
+          {mode === 'private' ? (
+            <span className="text-teal-400 ml-2">Private</span>
+          ) : (
+            <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-600 ml-2">
+              Public
+            </span>
+          )}
+        </div>
+        <CustomComponent
+          buttonText="Process"
+          onProcess={onProcess}
+          isProcessing={isProcessing}
+          progress={progress!}
+          // hookError={hookError}
 
-        <button 
-          type="button" 
-          className={`text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center ${isProcessing ? 'opacity-50 cursor-not-allowed' : ''}`}
-          onClick={onProcess}
-          disabled={isProcessing}
-        >
-          {isProcessing ? (
-            <svg className="animate-spin h-5 w-5 mr-3 inline-block" viewBox="0 0 24 24">
-              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-            </svg>
-          ) : null}
-          {isProcessing ? 'Processing...' : 'Process'}
-        </button> 
+        />
       </div>
-      
     </header>
   );
 };
