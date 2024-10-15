@@ -2,14 +2,8 @@
 
 import { useState } from 'react'
 import { Input } from "@/components/ui/input"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Card, CardContent, CardHeader } from "@/components/ui/card"
-
-// Mock data to simulate JSON from database
-const initialData = [
-  { id: 1, word: "Ephemeral", meaning: "Lasting for a very short time" },
-  { id: 2, word: "Ubiquitous", meaning: "Present, appearing, or found everywhere" },
-]
+import { Textarea } from "@/components/ui/text-area"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
 type WordMeaning = {
   id: number
@@ -17,8 +11,12 @@ type WordMeaning = {
   meaning: string
 }
 
-export default function WordMeaningTable() {
-  const [wordMeanings, setWordMeanings] = useState<WordMeaning[]>(initialData)
+interface WordMeaningTableProps {
+  initialWordMeanings: WordMeaning[]
+}
+
+export default function WordMeaningTable({ initialWordMeanings }: WordMeaningTableProps) {
+  const [wordMeanings, setWordMeanings] = useState<WordMeaning[]>(initialWordMeanings)
 
   const handleEdit = (id: number, field: 'word' | 'meaning', value: string) => {
     setWordMeanings(prevState =>
@@ -29,41 +27,39 @@ export default function WordMeaningTable() {
   }
 
   return (
-    <Card className="w-full max-w-2xl mx-auto">
+    <Card className="w-full max-w-4xl mx-auto">
       <CardHeader>
-        {/* <CardTitle>Word and Meaning Table</CardTitle> */}
       </CardHeader>
       <CardContent>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead className="w-1/2">Word</TableHead>
-              <TableHead className="w-1/2">Meaning</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {wordMeanings.map((item) => (
-              <TableRow key={item.id}>
-                <TableCell className="p-2">
-                  <Input
-                    value={item.word}
-                    onChange={(e) => handleEdit(item.id, 'word', e.target.value)}
-                    placeholder="Enter word"
-                    className="w-full"
-                  />
-                </TableCell>
-                <TableCell className="p-2">
-                  <Input
-                    value={item.meaning}
-                    onChange={(e) => handleEdit(item.id, 'meaning', e.target.value)}
-                    placeholder="Enter meaning"
-                    className="w-full"
-                  />
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+        <div className="space-y-4">
+          <div className="flex flex-col sm:flex-row gap-4 font-bold">
+            <div className="w-full sm:w-1/3">Word</div>
+            <div className="w-full sm:w-2/3">Meaning</div>
+          </div>
+          {wordMeanings.map((item) => (
+            <div key={item.id} className="flex flex-col sm:flex-row gap-4">
+              <div className="w-full sm:w-1/3">
+                <Input
+                  id={`word-${item.id}`}
+                  value={item.word}
+                  onChange={(e) => handleEdit(item.id, 'word', e.target.value)}
+                  placeholder="Enter word"
+                  className="w-full"
+                />
+              </div>
+              <div className="w-full sm:w-2/3">
+                <Textarea
+                  id={`meaning-${item.id}`}
+                  value={item.meaning}
+                  onChange={(e) => handleEdit(item.id, 'meaning', e.target.value)}
+                  placeholder="Enter meaning"
+                  className="w-full"
+                  rows={3}
+                />
+              </div>
+            </div>
+          ))}
+        </div>
       </CardContent>
     </Card>
   )

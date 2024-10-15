@@ -6,10 +6,11 @@ import { useToast } from "@/hooks/use-toast"
 
 export default function Header({ title = "Title" }: { title?: string }) {
    const { toast } = useToast();
+   const formatedTitile = title.split(" ").slice(0,5).join(" ")+"...";
   return (
     <header className=" border-b">
       <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-        <h1 className="text-2xl font-bold text-foreground">{title}</h1>
+        <h1 className="text-2xl font-bold text-foreground">{formatedTitile}</h1>
         <div className="space-x-2">
           <Button variant="default" size="sm"
           onClick={() => {
