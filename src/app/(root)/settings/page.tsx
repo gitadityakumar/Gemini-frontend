@@ -1,28 +1,48 @@
 
-"use client"
+//^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+'use client'
 
-import { useState } from "react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Switch } from "@/components/ui/switch"
-import { useToast } from "@/hooks/use-toast"
-import { Toaster } from "@/components/ui/toaster"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
+import React, { useState } from "react";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Switch } from "@/components/ui/switch";
+import { useToast } from "@/hooks/use-toast";
+import { Toaster } from "@/components/ui/toaster";
 import { useRecoilState } from 'recoil';
-import { modeState,activeServiceState } from '@/app/recoilContextProvider';
+import { modeState, activeServiceState } from '@/app/recoilContextProvider';
+import { storeApiKey, getApiKey } from '@/app/actions/apiKeyActions';
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+
+
+type ServiceType = "gemini" | "graq" | null;
 
 export default function SettingsPage() {
-  const [activeService, setActiveService] = useRecoilState(activeServiceState);
-  const [mode,setMode] = useRecoilState(modeState);
-  const { toast } = useToast()
+  const [activeService, setActiveService] = useRecoilState<ServiceType>(activeServiceState);
+  const [mode, setMode] = useRecoilState(modeState);
+  const { toast } = useToast();
 
-  const toggleService = (service: "gemini" | "graq" | null) => {
+  const toggleService = async (service: ServiceType) => {
     if (activeService === service) {
-      setActiveService(null);  
-      setMode("public");      
+      setActiveService(null);
+      setMode("public");
     } else if (activeService === null) {
-      setActiveService(service);
-      setMode("private");     
+      // Fetch the API key when toggling
+      const result = await getApiKey(service!);
+      if (result.success && result.apiKey) {
+        setActiveService(service);
+        setMode("private");
+        toast({
+          title:"API Key Found",
+          description:`API key is present for ${service}`,
+          variant:"default"
+        })
+      } else {
+        toast({
+          title: "Missing API Key",
+          description: `Please add an API key for ${service} .`,
+          variant: "destructive",
+        });
+      }
     } else {
       toast({
         title: "Error 😐",
@@ -31,7 +51,6 @@ export default function SettingsPage() {
       });
     }
   };
-  
 
   return (
     <div className="w-screen bg-gradient-to-br from-blue-50 via-indigo-100 to-purple-100 p-8">
@@ -56,24 +75,40 @@ export default function SettingsPage() {
       </div>
       <Toaster />
     </div>
-  )
+  );
 }
+
 
 interface ServiceCardProps {
-  title: string
-  description: string
-  isActive: boolean
-  onToggle: () => void
+  title: string;
+  description: string;
+  isActive: boolean;
+  onToggle: () => void;
 }
 
-function ServiceCard({ title, description, isActive, onToggle }: ServiceCardProps) {
-  const [apiKey, setApiKey] = useState("")
+export function ServiceCard({ title, description, isActive, onToggle }: ServiceCardProps) {
+  const [apiKey, setApiKey] = useState<string>("");
+  const { toast } = useToast();
 
-  const handleSave = () => {
-    // save the API key
-    console.log(`Saving API key for ${title}: ${apiKey}`)
-    //  toast message to confirm
-  }
+  const handleSave = async () => {
+    try {
+      const result = await storeApiKey(title.toLowerCase(), apiKey);
+      if (result.success) {
+        toast({
+          title: "Success",
+          description: `API key for ${title} saved successfully.`,
+        });
+      } else {
+        throw new Error(result.message);
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: `Failed to save API key for ${title}.`,
+        variant: "destructive",
+      });
+    }
+  };
 
   return (
     <Card>
@@ -93,14 +128,15 @@ function ServiceCard({ title, description, isActive, onToggle }: ServiceCardProp
       <CardContent className="space-y-4 pt-4">
         <Input
           type="text"
-          placeholder="Enter API Key"
+          placeholder={isActive ? "Api key found" : "Please  enter your Api key if you haven't"}
           value={apiKey}
           onChange={(e) => setApiKey(e.target.value)}
+          disabled={isActive}  // Disable input if the service is inactive
         />
-        <Button onClick={handleSave} className="w-full">
+        <Button onClick={handleSave} className="w-full" disabled={isActive}>
           Save
         </Button>
       </CardContent>
     </Card>
-  )
+  );
 }
