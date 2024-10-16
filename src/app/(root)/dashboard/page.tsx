@@ -9,6 +9,7 @@ import { useProcessVideo } from "@/hooks/useProcessVideo";
 import { ToastAction } from "@radix-ui/react-toast";
 import { modeState } from "@/app/recoilContextProvider";
 import { useRecoilState } from "recoil";
+import { foundToken } from "@/app/actions/getToken";
 
 
 const Page = () => {
@@ -18,15 +19,33 @@ const Page = () => {
   const [error, setError] = useState<string | null>(null);
   const [hasExtension, setHasExtension] = useState<boolean | null>(null);
   const [mode] = useRecoilState(modeState);
+  const [token, setToken] = useState<string | null>(null);
 
-  // Token can be fetched from your auth context
-  const token = "<your_token_here>"; 
-  
   // Process the selected videos
   const { isProcessing, progress, processVideo,hookError } = useProcessVideo( 
     token
   );
   
+ // token useEffect
+useEffect(() => {
+  const fetchToken = async () => {
+    try {
+      const response = await fetch("/api/token");
+      const data = await response.json();
+      
+      if (response.ok) {
+        setToken(data.token);
+      } else {
+        console.error(data.error);
+      }
+    } catch (error) {
+      console.error("Error fetching token:", error);
+    }
+  };
+
+  fetchToken();
+}, []);
+ //end here 
   useEffect(() => {
     if (hookError) {
       toast({
@@ -228,3 +247,8 @@ const Page = () => {
 };
 
 export default Page;
+
+
+
+
+

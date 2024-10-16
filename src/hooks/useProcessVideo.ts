@@ -6,7 +6,7 @@ require('dotenv').config();
 
 const uri = process.env.NEXT_PUBLIC_SECONDRY_BACKEND_URL;
 
-export const useProcessVideo = (token: string) => {
+export const useProcessVideo = (token: string | null ) => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [progress, setProgress] = useState<number | null>(null);
   const [hookError, setHookError] = useState<string | null>(null);
