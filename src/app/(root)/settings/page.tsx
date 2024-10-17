@@ -53,9 +53,9 @@ export default function SettingsPage() {
   };
 
   return (
-    <div className="w-screen bg-gradient-to-br from-blue-50 via-indigo-100 to-purple-100 p-8">
+    <div className="w-screen bg-slate-50 p-8">
       <header className="mb-8">
-        <h1 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600">
+        <h1 className="text-2xl font-bold   text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600">
           Settings
         </h1>
       </header>
@@ -111,7 +111,7 @@ export function ServiceCard({ title, description, isActive, onToggle }: ServiceC
   };
 
   return (
-    <Card>
+    <Card className="bg-white">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <div>
           <CardTitle className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 from-5% via-purple-600 via-40% to-pink-400 to to-80%">{title}</CardTitle>

@@ -30,7 +30,7 @@ export const useProcessVideo = (token: string | null ) => {
         body: JSON.stringify({
           videoData: selectedVideos,
           usage: mode,
-          model: model, // Or 'private', based on user selection
+          model: model,// Or 'private', based on user selection
         }),
       });
 

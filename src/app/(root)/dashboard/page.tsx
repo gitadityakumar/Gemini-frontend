@@ -9,7 +9,6 @@ import { useProcessVideo } from "@/hooks/useProcessVideo";
 import { ToastAction } from "@radix-ui/react-toast";
 import { modeState } from "@/app/recoilContextProvider";
 import { useRecoilState } from "recoil";
-import { foundToken } from "@/app/actions/getToken";
 
 
 const Page = () => {
@@ -166,7 +165,7 @@ useEffect(() => {
   const renderContent = () => {
     if (error) {
       return (
-        <div className="flex items-center justify-center h-full">
+        <div className="flex items-center justify-center h-full ">
           <div className="text-red-500 text-center">
             <p className="text-xl font-semibold">Error</p>
             <p>{error}</p>
@@ -226,18 +225,17 @@ useEffect(() => {
   };
 
   return (
-    <div className="flex flex-col bg-white h-full w-full overflow-x-hidden">
+    <div className="flex flex-col bg-slate-50 h-full w-full overflow-x-hidden ">
       <div className="flex-shrink-0 p-4">
         <PageHeader
           onProcess={handleProcess}
           isProcessing={isProcessing} 
           progress={progress}
-          // hookError={hookError!}
         />
       </div>
 
       <div className="flex-grow overflow-auto ">
-        <div className="bg-white dark:bg-neutral-900 rounded-lg shadow-lg p-6 min-h-full">
+        <div className="bg-slate-50 dark:bg-neutral-900 rounded-lg shadow-lg p-6 min-h-full">
           {renderContent()}
         </div>
       </div>

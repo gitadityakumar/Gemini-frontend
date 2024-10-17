@@ -46,7 +46,7 @@ export default function CardDemo({ video, onSelect, isSelected  }: CardDemoProps
     <div className="max-w-xs w-full group/card mt-2">
       <div className={cn(
         "cursor-pointer overflow-hidden relative card h-auto rounded-md shadow-xl max-w-sm mx-auto flex flex-col justify-between p-4",
-        "bg-white transition-transform duration-300 ease-in-out transform group-hover/card:scale-105"
+        "bg-white/5 transition-transform duration-300 ease-in-out transform group-hover/card:scale-105"
       )}>
         {/* Channel info */}
         <div className="flex flex-row items-center space-x-4 z-10 mb-4">

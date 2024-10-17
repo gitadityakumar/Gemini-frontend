@@ -70,7 +70,6 @@ export default function Layout({ children }: Readonly<{children: ReactNode}>) {
         <SidebarBody className="justify-between gap-10">
           <div className="flex flex-col flex-1 overflow-y-auto overflow-x-hidden">
             <>
-              
               <LogoIcon />
             </>
             <div className="mt-8 flex flex-col gap-2">
@@ -78,14 +77,12 @@ export default function Layout({ children }: Readonly<{children: ReactNode}>) {
                 <SidebarLink key={idx} link={link} />
               ))}
             </div>
-            
           </div>
           <div>
           <SidebarLink
             link={{
               label: "    Quota",
               href: "#",
-              
               }}
   className="backdrop-blur-sm bg-white/20 p-3 mb-4 rounded-full border border-white/30 shadow-lg hover:bg-white/30 transition-all duration-300 "
   textClassName="text-transparent   bg-clip-text bg-gradient-to-r from-blue-400 to-purple-600"
@@ -133,7 +130,6 @@ export const LogoIcon = () => {
       href="/"
       className="font-normal flex space-x-2 items-center text-sm text-black py-1 relative z-20"
     >
-      
       <div className="w-32  rounded-br-lg rounded-tr-sm rounded-tl-lg rounded-bl-sm flex-shrink-0">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 60" className="w-full h-auto">
                 <defs>
@@ -147,7 +143,6 @@ export const LogoIcon = () => {
                 <path d="M185 10 L190 15 L185 20" stroke="url(#gradient)" strokeWidth="3" fill="none"/>
                 <path d="M180 10 L185 15 L180 20" stroke="url(#gradient)" strokeWidth="3" fill="none"/>
       </svg>
-      
       </div>
     </Link>
   );
