@@ -27,7 +27,7 @@ export default function WordMeaningTable({ initialWordMeanings }: WordMeaningTab
   }
 
   return (
-    <Card className="w-full max-w-4xl mx-auto">
+    <Card className="w-full max-w-4xl mx-auto bg-gray-200">
       <CardHeader>
       </CardHeader>
       <CardContent>
@@ -44,7 +44,7 @@ export default function WordMeaningTable({ initialWordMeanings }: WordMeaningTab
                   value={item.word}
                   onChange={(e) => handleEdit(item.id, 'word', e.target.value)}
                   placeholder="Enter word"
-                  className="w-full"
+                  className="w-full bg-white/50"
                 />
               </div>
               <div className="w-full sm:w-2/3">
@@ -53,7 +53,7 @@ export default function WordMeaningTable({ initialWordMeanings }: WordMeaningTab
                   value={item.meaning}
                   onChange={(e) => handleEdit(item.id, 'meaning', e.target.value)}
                   placeholder="Enter meaning"
-                  className="w-full"
+                  className="w-full bg-white/50"
                   rows={3}
                 />
               </div>
