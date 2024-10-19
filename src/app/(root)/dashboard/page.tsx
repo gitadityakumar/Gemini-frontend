@@ -49,9 +49,8 @@ useEffect(() => {
     if (hookError) {
       toast({
         title: "Error",
-        description: hookError, // Display the error message from hookError
+        description: hookError,
         variant: "destructive",
-        action: <ToastAction altText="Try again">Try again</ToastAction>,
       });
     }
   }, [hookError]);

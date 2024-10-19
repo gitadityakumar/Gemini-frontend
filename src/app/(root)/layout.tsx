@@ -18,13 +18,12 @@ import { useUser } from "@clerk/nextjs";
 
 
 
-
 export default function Layout({ children }: Readonly<{children: ReactNode}>) {
   const { user } = useUser();
   const firstName = user?.firstName ;
   const lastName = user?.lastName ;
   const fullName = firstName + " " + lastName ;
-  
+ 
   const links = [
     {
       label: "Dashboard",
@@ -81,7 +80,7 @@ export default function Layout({ children }: Readonly<{children: ReactNode}>) {
           <div>
           <SidebarLink
             link={{
-              label: "    Quota",
+              label: `Quota:     ${JSON.stringify(user?.publicMetadata.currentCount)} / ${JSON.stringify(user?.publicMetadata.limit)}`,
               href: "#",
               }}
   className="backdrop-blur-sm bg-white/20 p-3 mb-4 rounded-full border border-white/30 shadow-lg hover:bg-white/30 transition-all duration-300 "
@@ -90,7 +89,7 @@ export default function Layout({ children }: Readonly<{children: ReactNode}>) {
           </SidebarLink>
           <SidebarLink
             link={{
-              label: `${fullName}`,
+              label: ` Hello ${fullName}`,
               href: "#",
               
               }}

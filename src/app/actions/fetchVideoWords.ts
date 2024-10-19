@@ -1,4 +1,3 @@
-// app/actions/fetchVideoWords.ts
 'use server'
 
 import { connectToDatabase } from "@/lib/mongodb";
