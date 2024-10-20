@@ -1,30 +1,76 @@
+"use client"
+
+import { useEffect, useState } from 'react';
 import Header from '@/components/blocks/header';
 import WordMeaningTable from '@/components/ui/word-meaning-table';
 import { fetchVideoWords } from '@/app/actions/fetchVideoWords';
 import { getVideoDetails } from '@/lib/videoUtils';
+import { useNotionIntegration } from '@/lib/notionIntegration';
+import { useToast } from "@/hooks/use-toast";
 
-export default async function VideoPage({ params }: { params: { videoId: string } }) {
-  try {
-    // Fetch video details
-    const video = await getVideoDetails(params.videoId);
+export default function VideoPage({ params }: { params: { videoId: string } }) {
+  const [video, setVideo] = useState<any>(null);
+  const [wordMeanings, setWordMeanings] = useState<any[]>([]);
+  const [exportContent, setExportContent] = useState('');
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-    if (!video) {
-      return <div>Video not found</div>;
+  const { toast } = useToast();
+
+  const { isConnected, isExporting, initiateNotionAuth, exportToNotion } = useNotionIntegration(exportContent);
+
+  useEffect(() => {
+    async function loadData() {
+      try {
+        const videoDetails = await getVideoDetails(params.videoId);
+        if (!videoDetails) {
+          setError('Video not found');
+          return;
+        }
+        setVideo(videoDetails);
+
+        const { wordMeanings: fetchedWordMeanings } = await fetchVideoWords(params.videoId);
+        setWordMeanings(fetchedWordMeanings);
+
+        const content = fetchedWordMeanings.map(wm => `${wm.word}: ${wm.meaning}`).join('\n');
+        setExportContent(content);
+      } catch (err) {
+        setError('Error loading video information. Please try again later.');
+      } finally {
+        setIsLoading(false);
+      }
     }
 
-    // Fetch word meanings
-    const { wordMeanings } = await fetchVideoWords(params.videoId);
+    loadData();
+  }, [params.videoId]);
 
-    // Prepare content for Notion export
-    const exportContent = wordMeanings.map(wm => `${wm.word}: ${wm.meaning}`).join('\n');
+  const handleSave = () => {
+    // Implement save functionality here
+    toast({
+      title: "Success 👍",
+      description: "Saved successfully!",
+    });
+  };
 
-    return (
-      <main className="container mx-auto px-4">
-        <Header title={video.title} content={exportContent} />
-        <WordMeaningTable initialWordMeanings={wordMeanings} />
-      </main>
-    );
-  } catch (error) {
-    return <div className='text-red-400'>Error loading video information. Please try again later.</div>;
+  if (isLoading) {
+    return <div>Loading...</div>;
   }
+
+  if (error) {
+    return <div className='text-red-400'>{error}</div>;
+  }
+
+  return (
+    <main className="container mx-auto px-4">
+      <Header 
+        title={video.title} 
+        isConnected={isConnected}
+        isExporting={isExporting}
+        onConnectNotion={initiateNotionAuth}
+        onExportToNotion={exportToNotion}
+        onSave={handleSave}
+      />
+      <WordMeaningTable initialWordMeanings={wordMeanings} />
+    </main>
+  );
 }

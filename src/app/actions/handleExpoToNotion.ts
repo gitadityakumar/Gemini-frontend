@@ -1,50 +1,39 @@
-async function handleExportToNotion() {
-  const pageContent = [
-    {
-      object: "block",
-      type: "heading_1",
-      heading_1: {
-        text: [
-          {
-            type: "text",
-            text: {
-              content: "Exported Content Title",
-            },
-          },
-        ],
-      },
-    },
-    {
-      object: "block",
-      type: "paragraph",
-      paragraph: {
-        text: [
-          {
-            type: "text",
-            text: {
-              content: "This is the content being exported to Notion.",
-            },
-          },
-        ],
-      },
-    },
-  ];
+"use server"
 
+export async function handleExportToNotion(content: string, title: string = 'Exported Content') {
   try {
-    const response = await fetch("/api/exportToNotion", {
+    const response = await fetch("http://localhost:3000/api/notionexport", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ content: pageContent }),
+      body: JSON.stringify({ content, title }),
     });
 
-    if (response.ok) {
-      alert("Page successfully exported to Notion!");
-    } else {
-      console.error("Failed to export content to Notion.");
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || 'Failed to export content to Notion');
     }
+
+    const result = await response.json();
+    
+    console.log("Content exported to Notion successfully!");
+    console.log("New page ID:", result.pageId);
+
+    return { success: true, pageId: result.pageId };
   } catch (error) {
-    console.error("Error:", error);
+    console.error("Error exporting to Notion:", error);
+
+    if (error instanceof Error) {
+      if (error.message.includes('Not authenticated with Notion')) {
+        console.log("Authentication Error: Please reconnect your Notion account.");
+      } else {
+        console.log("Error:", error.message || "Failed to export to Notion. Please try again.");
+      }
+    } else {
+      console.log("An unexpected error occurred. Please try again.");
+    }
+
+    return { success: false, error: error instanceof Error ? error.message : "Unknown error" };
   }
 }
