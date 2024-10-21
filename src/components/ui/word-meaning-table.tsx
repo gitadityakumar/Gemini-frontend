@@ -1,35 +1,30 @@
-'use client'
+'use client';
 
-import { useState } from 'react'
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/text-area"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/text-area";
+import { Card, CardContent } from "@/components/ui/card";
 
 type WordMeaning = {
-  id: number
-  word: string
-  meaning: string
-}
+  id: number;
+  word: string;
+  meaning: string;
+};
 
 interface WordMeaningTableProps {
-  initialWordMeanings: WordMeaning[]
+  wordMeanings: WordMeaning[];
+  onWordMeaningsChange: (updatedWordMeanings: WordMeaning[]) => void;
 }
 
-export default function WordMeaningTable({ initialWordMeanings }: WordMeaningTableProps) {
-  const [wordMeanings, setWordMeanings] = useState<WordMeaning[]>(initialWordMeanings)
-
+export default function WordMeaningTable({ wordMeanings, onWordMeaningsChange }: WordMeaningTableProps) {
   const handleEdit = (id: number, field: 'word' | 'meaning', value: string) => {
-    setWordMeanings(prevState =>
-      prevState.map(item =>
-        item.id === id ? { ...item, [field]: value } : item
-      )
-    )
-  }
+    const updatedWordMeanings = wordMeanings.map(item =>
+      item.id === id ? { ...item, [field]: value } : item
+    );
+    onWordMeaningsChange(updatedWordMeanings);
+  };
 
   return (
     <Card className="w-full max-w-4xl mx-auto bg-gray-200">
-      <CardHeader>
-      </CardHeader>
       <CardContent>
         <div className="space-y-4">
           <div className="flex flex-col sm:flex-row gap-4 font-bold">
@@ -62,5 +57,5 @@ export default function WordMeaningTable({ initialWordMeanings }: WordMeaningTab
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }

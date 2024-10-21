@@ -1,10 +1,11 @@
-"use client"
+"use client";
 
 import { useEffect, useState } from 'react';
 import Header from '@/components/blocks/header';
 import WordMeaningTable from '@/components/ui/word-meaning-table';
 import { fetchVideoWords } from '@/app/actions/fetchVideoWords';
 import { getVideoDetails } from '@/lib/videoUtils';
+import { updateVideoWords } from '@/app/actions/updateVideoWords';  
 import { useNotionIntegration } from '@/lib/notionIntegration';
 import { useToast } from "@/hooks/use-toast";
 
@@ -16,7 +17,6 @@ export default function VideoPage({ params }: { params: { videoId: string } }) {
   const [error, setError] = useState<string | null>(null);
 
   const { toast } = useToast();
-
   const { isConnected, isExporting, initiateNotionAuth, exportToNotion } = useNotionIntegration(exportContent);
 
   useEffect(() => {
@@ -44,12 +44,20 @@ export default function VideoPage({ params }: { params: { videoId: string } }) {
     loadData();
   }, [params.videoId]);
 
-  const handleSave = () => {
-    // Implement save functionality here
-    toast({
-      title: "Success 👍",
-      description: "Saved successfully!",
-    });
+  const handleSave = async () => {
+    try {
+      await updateVideoWords(params.videoId, wordMeanings);  
+      toast({
+        title: "Success 👍",
+        description: "Saved successfully!",
+      });
+    } catch (error) {
+      console.error("Error saving word meanings:", error);
+      toast({
+        title: "Error 🚨",
+        description: "Failed to save. Please try again.",
+      });
+    }
   };
 
   if (isLoading) {
@@ -68,9 +76,12 @@ export default function VideoPage({ params }: { params: { videoId: string } }) {
         isExporting={isExporting}
         onConnectNotion={initiateNotionAuth}
         onExportToNotion={exportToNotion}
-        onSave={handleSave}
+        onSave={handleSave} 
       />
-      <WordMeaningTable initialWordMeanings={wordMeanings} />
+      <WordMeaningTable 
+        wordMeanings={wordMeanings} 
+        onWordMeaningsChange={setWordMeanings}  
+      />
     </main>
   );
 }
