@@ -6,16 +6,18 @@ import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
 import { Toaster } from "@/components/ui/toaster";
 import { useRecoilState } from 'recoil';
-import { modeState, activeServiceState } from '@/app/recoilContextProvider';
+import { modeState, activeServiceState ,apiKeyDataState} from '@/app/recoilContextProvider';
 import { storeApiKey, getApiKey } from '@/app/actions/apiKeyActions';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { set } from "date-fns";
 
 type ServiceType = "gemini" | "graq" | null;
 
 export default function SettingsPage() {
   const [activeService, setActiveService] = useRecoilState<ServiceType>(activeServiceState);
   const [mode, setMode] = useRecoilState(modeState);
+  const [apikey,setApiKey] = useRecoilState(apiKeyDataState);
   const { toast } = useToast();
 
   const toggleService = async (service: ServiceType) => {
@@ -25,6 +27,8 @@ export default function SettingsPage() {
     } else if (activeService === null) {
       // Fetch the API key when toggling
       const result = await getApiKey(service!);
+      //  console.log(result.apiKey)
+      setApiKey(result.apiKey !)
       if (result.success && result.apiKey) {
         setActiveService(service);
         setMode("private");

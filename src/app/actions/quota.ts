@@ -2,7 +2,7 @@
 
 import { clerkClient, auth } from '@clerk/nextjs/server';
 
-const DAILY_LIMIT = 5;
+const DAILY_LIMIT = 15;
 const RESET_INTERVAL = 24 * 60 * 60 * 1000; 
 
 export async function quotaUpdate(): Promise<{ success: boolean }> {

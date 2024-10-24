@@ -2,12 +2,10 @@
 import React, { useState,ReactNode } from "react";
 import { Sidebar, SidebarBody, SidebarLink } from "@/components/ui/sidebar";
 import {
-  IconArrowLeft,
+  IconLogout2,
   IconBrandTabler,
   IconSettings,
   IconCpu ,
-  IconSquareLetterQ ,
-  IconUserCircle 
 } from "@tabler/icons-react";
 import Link from "next/link";
 import { motion } from "framer-motion";
@@ -50,7 +48,7 @@ export default function Layout({ children }: Readonly<{children: ReactNode}>) {
       label: "Logout",
       // No href here because we're using a custom component
       icon: (
-        <IconArrowLeft className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
+        <IconLogout2 className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
       ),
       component: <CustomSignOutButton />
     },

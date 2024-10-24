@@ -16,7 +16,7 @@ interface ApiKeyDocument {
 interface ActionResult {
   success: boolean;
   message?: string;
-  apiKey?: string;
+  apiKey?: object;
 }
 
 async function getUserId(): Promise<string | null> {
@@ -68,8 +68,11 @@ export async function getApiKey(service: string): Promise<ActionResult> {
     const result = await collection.findOne({ userId, service });
     
     if (result && isEncryptedData(result.encryptedKey)) {
-      const decryptedKey = decrypt(result.encryptedKey);
-      return { success: true, apiKey: decryptedKey };
+      // console.log(result.encryptedKey.encryptedData);
+      // console.log(result.encryptedKey +":   #############")
+
+      // const decryptedKey = decrypt(result.encryptedKey);
+      return { success: true, apiKey: result.encryptedKey };
     } else {
       return { success: false, message: "API key not found or invalid" };
     }
