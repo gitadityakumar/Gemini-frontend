@@ -1,17 +1,97 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Client } from '@notionhq/client';
+import type { CreatePageParameters } from '@notionhq/client/build/src/api-endpoints';
+
+function parseEntries(content: string): { word: string; definition: string }[] {
+  // Split content by line breaks and filter out empty lines
+  return content.split('\n')
+    .filter(line => line.trim())
+    .map(line => {
+      const [word, ...definitionParts] = line.split(':');
+      return {
+        word: word.trim(),
+        definition: definitionParts.join(':').trim()
+      };
+    })
+    .filter(entry => entry.word && entry.definition); // Filter out invalid entries
+}
+
+function createStructuredBlocks(title: string, content: string) {
+  const entries = parseEntries(content);
+  const blocks = [];
+
+  // Add title block
+  blocks.push({
+    object: 'block',
+    type: 'heading_1',
+    heading_1: {
+      rich_text: [{
+        type: 'text',
+        text: { content: title || 'Dictionary Entries' }
+      }]
+    }
+  } as const);
+
+  // Add divider after title
+  blocks.push({
+    object: 'block',
+    type: 'divider',
+    divider: {}
+  } as const);
+
+  // Add table header
+  blocks.push({
+    object: 'block',
+    type: 'table',
+    table: {
+      table_width: 2,
+      has_column_header: true,
+      has_row_header: false,
+      children: [
+        {
+          type: 'table_row',
+          table_row: {
+            cells: [
+              [{ type: 'text', text: { content: 'Word' } }],
+              [{ type: 'text', text: { content: 'Definition' } }]
+            ]
+          }
+        },
+        ...entries.map(entry => ({
+          type: 'table_row',
+          table_row: {
+            cells: [
+              [{ type: 'text', text: { content: entry.word } }],
+              [{ type: 'text', text: { content: entry.definition } }]
+            ]
+          }
+        }))
+      ]
+    }
+  } as const);
+
+  return blocks;
+}
 
 export async function POST(request: NextRequest) {
-  const { content, title } = await request.json();
-  const notionToken = request.cookies.get('notion_token')?.value;
-
-  if (!notionToken) {
-    return NextResponse.json({ error: 'Not authenticated with Notion' }, { status: 401 });
-  }
-
-  const notion = new Client({ auth: notionToken });
-
   try {
+    const { content, title } = await request.json();
+    console.log(content+"++++++++"+title)
+    const notionToken = request.cookies.get('notion_token')?.value;
+
+    if (!notionToken) {
+      return NextResponse.json({ error: 'Not authenticated with Notion' }, { status: 401 });
+    }
+
+    // Validate required fields
+    if (!content) {
+      return NextResponse.json({ 
+        error: 'Content is required' 
+      }, { status: 400 });
+    }
+
+    const notion = new Client({ auth: notionToken });
+
     // Search for pages that the user has access to
     const response = await notion.search({
       filter: {
@@ -24,36 +104,50 @@ export async function POST(request: NextRequest) {
       }
     });
 
-    // Find the first page that doesn't have a parent (i.e., it's a root page)
+    // Find the first page that doesn't have a parent
     const rootPage = response.results.find((page: any) => !page.parent.page_id);
 
     if (!rootPage) {
       return NextResponse.json({ error: 'No root page found in the workspace' }, { status: 404 });
     }
 
-    // Create the new page under the root page
-    const newPage = await notion.pages.create({
+    // Create structured blocks
+    const contentBlocks = createStructuredBlocks(title, content);
+
+    // Create the new page
+    const pageParams: CreatePageParameters = {
       parent: { page_id: rootPage.id },
       properties: {
         title: {
           type: 'title',
-          title: [{ type: 'text', text: { content: title || 'Exported Content' } }]
+          title: [{
+            type: 'text',
+            text: { content: title || 'Dictionary Entries' }
+          }]
         }
       },
-      children: [
-        {
-          object: 'block',
-          type: 'paragraph',
-          paragraph: {
-            rich_text: [{ type: 'text', text: { content } }]
-          }
-        }
-      ]
-    });
+      //@ts-ignore
+      children: contentBlocks
+    };
 
-    return NextResponse.json({ message: 'Content exported to Notion successfully', pageId: newPage.id });
+    const newPage = await notion.pages.create(pageParams);
+
+    return NextResponse.json({ 
+      message: 'Content exported to Notion successfully', 
+      pageId: newPage.id 
+    });
   } catch (error) {
     console.error('Error exporting to Notion:', error);
-    return NextResponse.json({ error: 'Failed to export content to Notion' }, { status: 500 });
+    
+    if (error instanceof Error) {
+      return NextResponse.json({ 
+        error: 'Failed to export content to Notion', 
+        details: error.message 
+      }, { status: 500 });
+    }
+    
+    return NextResponse.json({ 
+      error: 'Failed to export content to Notion' 
+    }, { status: 500 });
   }
 }
