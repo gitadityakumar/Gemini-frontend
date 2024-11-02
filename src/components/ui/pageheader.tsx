@@ -27,6 +27,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({ onProcess, isProcessing, progre
   };
 
   // Placeholder data for unauthenticated users
+  //TODO: add hardcoded icon here instead of placeholderurl
   const placeholderImageUrl = `https://via.placeholder.com/48x48/${getRandomColor().slice(1)}/FFFFFF?text=?`;
   const placeholderName = "Guest User";
   const imageUrl = isLoaded && user ? user.imageUrl : placeholderImageUrl;

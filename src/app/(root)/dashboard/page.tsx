@@ -65,7 +65,12 @@ useEffect(() => {
     }
   }, [progress]);
   
+//just for test
+// useEffect(() => {
+//   const auth = fetch('http://localhost:3000/api/auth')
 
+// }, [])
+//test useEffect
   // Fetch videos from the backend
   useEffect(() => {
     const fetchVideos = async () => {
