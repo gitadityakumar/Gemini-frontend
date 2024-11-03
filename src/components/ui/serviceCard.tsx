@@ -2,7 +2,7 @@ import { storeApiKey } from "@/app/actions/apiKeyActions";
 import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./card";
-import { Switch } from "@radix-ui/react-switch";
+import { Switch } from "@/components/ui/switch";
 import { Input } from "./input";
 import { Button } from "./button";
 
