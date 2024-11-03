@@ -25,6 +25,7 @@ export function ServiceCard({ title, description, isActive, onToggle }: ServiceC
           title: "Success",
           description: `API key for ${title} saved successfully.`,
         });
+        setApiKey("");
       } else {
         throw new Error(result.message);
       }
