@@ -57,16 +57,16 @@ export default function SettingsPage() {
 
   return (
     <>
-      <div className="w-screen bg-slate-50 p-8">
+      <div className="w-screen min-h-screen bg-slate-50 dark:bg-zinc-950 p-8 transition-colors">
         <header className="mb-8 flex flex-row justify-between items-center">
-          <h1 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600">
+          <h1 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600 dark:from-purple-300 dark:to-pink-500">
             Settings
           </h1>
           <div>
             <ModeToggle />
           </div>
         </header>
-        <div className="grid gap-8 md:grid-cols-2">
+        <div className="grid gap-8 md:grid-cols-2 transition-colors">
           <ServiceCard
             title="Gemini"
             description="Activate Gemini service"

@@ -229,7 +229,7 @@ useEffect(() => {
   };
 
   return (
-    <div className="flex flex-col bg-slate-50 h-full w-full overflow-x-hidden ">
+    <div className="flex flex-col bg-background h-full w-full overflow-x-hidden">
       <div className="flex-shrink-0 p-4">
         <PageHeader
           onProcess={handleProcess}
@@ -237,9 +237,9 @@ useEffect(() => {
           progress={progress}
         />
       </div>
-
-      <div className="flex-grow overflow-auto ">
-        <div className="bg-slate-50 dark:bg-neutral-900 rounded-lg shadow-lg p-6 min-h-full">
+  
+      <div className="flex-grow overflow-auto">
+        <div className="bg-card rounded-lg shadow-md p-6 min-h-full">
           {renderContent()}
         </div>
       </div>

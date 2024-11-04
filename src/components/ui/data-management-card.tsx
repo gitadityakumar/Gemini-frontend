@@ -73,8 +73,8 @@ export default function DataManagementCard() {
 
   return (
     <div className="w-full h-auto my-8 rounded-lg">
-      <Card className="w-full h-full">
-        <CardContent className="px-6 ">
+      <Card className="w-full h-full bg-white dark:bg-zinc-950 border-zinc-200 dark:border-zinc-800">
+        <CardContent className="px-6">
           <div className="overflow-hidden rounded-lg">
             <table className="w-full">
               <tbody>
@@ -82,14 +82,16 @@ export default function DataManagementCard() {
                   <tr 
                     key={action.id}
                     className={`
-                      group transition-all duration-200 hover:bg-gradient-to-r from-black to-white/15
+                      group transition-all duration-300 
+                      hover:bg-gradient-to-r hover:from-purple-500/10 hover:to-pink-500/10
+                      dark:hover:from-purple-400/10 dark:hover:to-pink-400/10
                       ${index === 0 ? 'rounded-t-lg' : ''}
                       ${index === actions.length - 1 ? 'rounded-b-lg' : ''}
                     `}
                   >
                     <td className="p-4 transition-colors">
                       <div className="flex items-center justify-between">
-                        <span className="text-lg font-medium text-gray-700 group-hover:text-white transition-colors">
+                        <span className="text-lg font-medium text-zinc-700 dark:text-zinc-200 group-hover:text-zinc-900 dark:group-hover:text-white transition-colors">
                           {action.label}
                         </span>
                         <Dialog 
@@ -100,17 +102,22 @@ export default function DataManagementCard() {
                             <Button
                               variant="ghost"
                               size="icon"
-                              className="text-gray-600 group-hover:text-white hover:bg-purple-700 rounded-full p-2 transition-colors"
+                              className="text-zinc-600 dark:text-zinc-400 
+                                group-hover:text-zinc-900 dark:group-hover:text-white 
+                                hover:bg-purple-100 dark:hover:bg-purple-500/20 
+                                rounded-full p-2 transition-colors"
                               aria-label={`Delete ${action.label}`}
                             >
-                              <Trash2 className="h-5 w-5 "  />
+                              <Trash2 className="h-5 w-5" />
                             </Button>
                           </DialogTrigger>
-                          <DialogContent className="bg-white">
+                          <DialogContent className="bg-white dark:bg-zinc-900 border dark:border-zinc-800">
                             <DialogHeader>
-                              <DialogTitle className="text-gray-800">Confirm Deletion</DialogTitle>
-                              <DialogDescription className="text-gray-600">
-                              {getActionDescription(action.id)}
+                              <DialogTitle className="text-zinc-800 dark:text-zinc-100">
+                                Confirm Deletion
+                              </DialogTitle>
+                              <DialogDescription className="text-zinc-600 dark:text-zinc-400">
+                                {getActionDescription(action.id)}
                               </DialogDescription>
                             </DialogHeader>
                             <DialogFooter className="sm:justify-start">
@@ -118,7 +125,7 @@ export default function DataManagementCard() {
                                 type="button"
                                 variant="destructive"
                                 onClick={() => handleDelete(action.id)}
-                                className="bg-red-500 hover:bg-red-600 text-white"
+                                className="bg-red-500 dark:bg-red-600 hover:bg-red-600 dark:hover:bg-red-700 text-white"
                               >
                                 Delete
                               </Button>
@@ -126,7 +133,10 @@ export default function DataManagementCard() {
                                 <Button 
                                   type="button" 
                                   variant="outline" 
-                                  className="text-gray-600 hover:bg-gray-100"
+                                  className="text-zinc-600 dark:text-zinc-400 
+                                    border-zinc-200 dark:border-zinc-700
+                                    hover:bg-zinc-100 dark:hover:bg-zinc-800
+                                    hover:text-zinc-900 dark:hover:text-zinc-100"
                                 >
                                   Cancel
                                 </Button>
