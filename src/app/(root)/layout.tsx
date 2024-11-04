@@ -56,6 +56,7 @@ export default function Layout({ children }: Readonly<{children: ReactNode}>) {
       ),
       component: <CustomSignOutButton />
     },
+    
   ];
   
   const [open, setOpen] = useState(false);
