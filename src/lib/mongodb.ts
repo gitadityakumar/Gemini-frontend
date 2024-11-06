@@ -1,41 +1,40 @@
-import { MongoClient, Db } from 'mongodb'
+import { MongoClient, Db } from 'mongodb';
+import dotenv from 'dotenv';
 
-require('dotenv').config();
-
+dotenv.config();
 
 const uri = process.env.MONGODB_URI;
 
 if (!uri) {
-  throw new Error('Please define the MONGODB_URI environment variable')
+  throw new Error('Please define the MONGODB_URI environment variable in .env.local');
 }
 
-let client: MongoClient
-let clientPromise: Promise<MongoClient>
+let client: MongoClient;
+let clientPromise: Promise<MongoClient>;
+
+// Use global variable in development mode to preserve client across HMR (Hot Module Replacement).
+let globalWithMongo = global as typeof globalThis & {
+  _mongoClientPromise?: Promise<MongoClient>;
+};
 
 if (process.env.NODE_ENV === 'development') {
-  // In development mode, use a global variable so that the value
-  // is preserved across module reloads caused by HMR (Hot Module Replacement).
-  let globalWithMongo = global as typeof globalThis & {
-    _mongoClientPromise?: Promise<MongoClient>
-  }
-
   if (!globalWithMongo._mongoClientPromise) {
-    client = new MongoClient(uri)
-    globalWithMongo._mongoClientPromise = client.connect()
+    client = new MongoClient(uri);
+    globalWithMongo._mongoClientPromise = client.connect();
   }
-  clientPromise = globalWithMongo._mongoClientPromise
+  clientPromise = globalWithMongo._mongoClientPromise;
 } else {
-  // In production mode, it's best to not use a global variable.
-  client = new MongoClient(uri)
-  clientPromise = client.connect()
+  // In production, avoid using a global variable.
+  client = new MongoClient(uri);
+  clientPromise = client.connect();
 }
 
-// Export a module-scoped MongoClient promise. By doing this in a
-// separate module, the client can be shared across functions.
-export default clientPromise
+// Export a MongoClient promise, so the client can be shared across functions.
+export default clientPromise;
 
+// Helper function to get the MongoDB database instance.
 export async function connectToDatabase(): Promise<{ client: MongoClient; db: Db }> {
-  const client = await clientPromise
-  const db = client.db()
-  return { client, db }
+  const client = await clientPromise;
+  const db = client.db("videoDataDB"); // Optionally use a database name from environment
+  return { client, db };
 }

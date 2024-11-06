@@ -1,48 +1,34 @@
-'use server'
+'use server';
 
-import { clerkClient, auth } from '@clerk/nextjs/server';
+import { connectToDatabase } from '@/lib/mongodb';
+import { auth } from '@clerk/nextjs/server';
 
-const DAILY_LIMIT = 15;
-const RESET_INTERVAL = 24 * 60 * 60 * 1000; 
-
-export async function quotaUpdate(): Promise<{ success: boolean }> {
-  const { userId } = auth();
+export async function getQuota() {
+  // Get the userId from Clerk authentication
+  const { userId } =  auth();
   
+  // If userId is not found, throw an error
   if (!userId) {
-    throw new Error("User not authenticated");
+    throw new Error('User not authenticated');
   }
 
-  const user = await clerkClient.users.getUser(userId);
-  const metadata = user.publicMetadata;
+  try {
+    const { db } = await connectToDatabase();
 
-  const currentTime = Date.now();
-  const lastResetTime = metadata.resetTime as number || 0;
-  let currentCount = metadata.currentCount as number || 0;
+    const quota = await db.collection('user_quota').findOne({ userId });
 
-  // Reset quota if 24 hours have passed
-  if (currentTime - lastResetTime >= RESET_INTERVAL) {
-    currentCount = 0;
+    if (!quota) {
+      throw new Error('No quota data found for the user');
+    }
+
+    return {
+      _id: quota._id.toHexString(),
+      userId: quota.userId,
+      date: quota.date,
+      count: quota.count
+    };
+  } catch (error) {
+    console.error('Error fetching quota:', error);
+    throw error;
   }
-
-  // Check if quota is exceeded
-  if (currentCount >= DAILY_LIMIT) {
-    return { success: false };
-  }
-
-  // Increment usage count
-  currentCount++;
-
-  // Update user metadata
-  await clerkClient.users.updateUserMetadata(userId, {
-    publicMetadata: {
-      limit: DAILY_LIMIT,
-      currentCount: currentCount,
-      remainingQuota: DAILY_LIMIT - currentCount,
-      resetTime: currentTime - lastResetTime >= RESET_INTERVAL ? currentTime : lastResetTime,
-    },
-  });
-
-  return { success: true };
 }
-
-

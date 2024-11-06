@@ -12,13 +12,36 @@ import {LogoIcon} from "@/components/ui/LogoIcon"
 import { cn } from "@/lib/utils";
 import CustomSignOutButton from "@/components/blocks/CustomSignOutButton";
 import { useUser } from "@clerk/nextjs";
+import {getQuota} from "@/app/actions/quota"
+
+
+type QuotaData = {
+  _id: string;
+  userId: string;
+  date: string;
+  count: number;
+};
 
 export default function Layout({ children }: Readonly<{children: ReactNode}>) {
   const { user } = useUser();
+  const [quota, setQuota] = React.useState<QuotaData | undefined>(undefined);
   const firstName = user?.firstName ;
   const lastName = user?.lastName ;
   const fullName = firstName + " " + lastName ;
- 
+  React.useEffect(() => {
+    const fetchQuota = async () => {
+      try {
+        const quotaData = await getQuota();
+        setQuota(quotaData);
+      } catch (error) {
+        console.error('Error fetching quota:', error);
+      }
+    };
+
+    fetchQuota();
+  }, []);
+
+
   const links = [
     {
       label: "Dashboard",
@@ -83,7 +106,7 @@ export default function Layout({ children }: Readonly<{children: ReactNode}>) {
           <div>
           <SidebarLink
             link={{
-              label: ` Daily quota :    ${JSON.stringify(user?.publicMetadata.currentCount)} / ${JSON.stringify(user?.publicMetadata.limit)}`,
+              label: ` Daily quota :    ${quota?.count} / 5`,
               href: "#",
               }}
   className="backdrop-blur-sm bg-white/20 p-3 mb-4 rounded-full border border-white/30 shadow-lg hover:bg-white/30 transition-all duration-300 "
