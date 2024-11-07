@@ -57,13 +57,13 @@ export default function Layout({ children }: Readonly<{children: ReactNode}>) {
         <IconCpu className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
       ),
     },
-    {
-      label:"chat",
-      href:"/chat",
-      icon:(
-        <IconMessageCircle  className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0"/>
-      )
-    },
+    // {
+    //   label:"chat",
+    //   href:"/chat",
+    //   icon:(
+    //     <IconMessageCircle  className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0"/>
+    //   )
+    // },
     {
       label: "Settings",
       href: "/settings",

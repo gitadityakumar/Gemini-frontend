@@ -19,6 +19,7 @@ const Page = () => {
   const [hasExtension, setHasExtension] = useState<boolean | null>(null);
   const [mode] = useRecoilState(modeState);
   const [token, setToken] = useState<string | null>(null);
+  // const [message,setMessage] = useState('');
 
   // Process the selected videos
   const { isProcessing, progress, processVideo,hookError } = useProcessVideo( 
@@ -65,11 +66,43 @@ useEffect(() => {
     }
   }, [progress]);
   
-//just for test
+//just  test for api/auth
 // useEffect(() => {
-//   const auth = fetch('http://localhost:3000/api/auth')
+//   // Function to handle sending the user data to the backend
+//   const sendUserData = async () => {
+//     let randomId = localStorage.getItem('randomId');
 
-// }, [])
+//     // Generate and save the random ID if it doesn't exist
+//     if (!randomId) {
+//       randomId = crypto.randomUUID();
+//       localStorage.setItem('randomId', randomId);
+//     }
+
+//     try {
+//       // Make the GET request to the backend
+//       const response = await fetch('/api/auth', {
+//         method: 'GET',
+//         headers: {
+//           'Content-Type': 'application/json',
+//         },
+//         body: JSON.stringify({ randomId }), // Send randomId in the request
+//       });
+
+//       // Handle the backend response
+//       if (response.ok) {
+//         const result = await response.json();
+//         setMessage(result.message);
+//       } else {
+//         console.error('Failed to send user data to backend', await response.text());
+//       }
+//     } catch (error) {
+//       console.error('Error sending user data to backend:', error);
+//     }
+//   };
+
+//   // Call the function when the component mounts
+//   sendUserData();
+// }, []); 
 //test useEffect
   // Fetch videos from the backend
   useEffect(() => {
