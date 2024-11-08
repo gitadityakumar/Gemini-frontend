@@ -1,6 +1,6 @@
 'use client'
 import { useState, useTransition } from 'react'
-import { Trash2 } from 'lucide-react'
+import { Trash2, Copy, Check } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import {
@@ -14,12 +14,16 @@ import {
   DialogClose,
 } from '@/components/ui/dialog'
 import { useToast } from '@/hooks/use-toast'
+import { useUser } from "@clerk/nextjs"
 import { deleteData } from '@/app/actions/clearData'
 
 export default function DataManagementCard() {
   const [openDialog, setOpenDialog] = useState<string | null>(null)
   const [isPending, startTransition] = useTransition();
+  const [isCopied, setIsCopied] = useState(false);
   const { toast } = useToast();
+  const { user } = useUser();
+  const userId = user?.id || 'Not available';
 
   const actions = [
     { id: 'history', label: 'Delete History' },
@@ -58,6 +62,25 @@ export default function DataManagementCard() {
     });
   };
 
+  const copyToClipboard = async () => {
+    try {
+      await navigator.clipboard.writeText(userId);
+      setIsCopied(true);
+      toast({
+        title: "Copied!",
+        description: "User ID copied to clipboard",
+        variant: "default",
+      });
+      setTimeout(() => setIsCopied(false), 2000);
+    } catch (err) {
+      toast({
+        title: "Error",
+        description: "Failed to copy to clipboard",
+        variant: "destructive",
+      });
+    }
+  };
+
   const getActionDescription = (id: string) => {
     switch(id) {
       case 'history':
@@ -72,9 +95,9 @@ export default function DataManagementCard() {
   };
 
   return (
-    <div className="w-full h-auto my-8 rounded-lg">
+    <div className="w-full h-auto my-6 rounded-lg">
       <Card className="w-full h-full bg-white dark:bg-zinc-950 border-zinc-200 dark:border-zinc-800">
-        <CardContent className="px-6">
+        <CardContent className="px-4">
           <div className="overflow-hidden rounded-lg">
             <table className="w-full">
               <tbody>
@@ -85,13 +108,11 @@ export default function DataManagementCard() {
                       group transition-all duration-300 
                       hover:bg-gradient-to-r hover:from-purple-500/10 hover:to-pink-500/10
                       dark:hover:from-purple-400/10 dark:hover:to-pink-400/10
-                      ${index === 0 ? 'rounded-t-lg' : ''}
-                      ${index === actions.length - 1 ? 'rounded-b-lg' : ''}
                     `}
                   >
-                    <td className="p-4 transition-colors">
+                    <td className="p-3 transition-colors">
                       <div className="flex items-center justify-between">
-                        <span className="text-lg font-medium text-zinc-700 dark:text-zinc-200 group-hover:text-zinc-900 dark:group-hover:text-white transition-colors">
+                        <span className="text-base font-medium text-zinc-700 dark:text-zinc-200 group-hover:text-zinc-900 dark:group-hover:text-white transition-colors">
                           {action.label}
                         </span>
                         <Dialog 
@@ -105,18 +126,18 @@ export default function DataManagementCard() {
                               className="text-zinc-600 dark:text-zinc-400 
                                 group-hover:text-zinc-900 dark:group-hover:text-white 
                                 hover:bg-purple-100 dark:hover:bg-purple-500/20 
-                                rounded-full p-2 transition-colors"
+                                rounded-full p-1.5 transition-colors"
                               aria-label={`Delete ${action.label}`}
                             >
-                              <Trash2 className="h-5 w-5" />
+                              <Trash2 className="h-4 w-4" />
                             </Button>
                           </DialogTrigger>
                           <DialogContent className="bg-white dark:bg-zinc-900 border dark:border-zinc-800">
                             <DialogHeader>
-                              <DialogTitle className="text-zinc-800 dark:text-zinc-100">
+                              <DialogTitle className="text-zinc-800 dark:text-zinc-100 text-lg">
                                 Confirm Deletion
                               </DialogTitle>
-                              <DialogDescription className="text-zinc-600 dark:text-zinc-400">
+                              <DialogDescription className="text-zinc-600 dark:text-zinc-400 text-sm">
                                 {getActionDescription(action.id)}
                               </DialogDescription>
                             </DialogHeader>
@@ -125,18 +146,19 @@ export default function DataManagementCard() {
                                 type="button"
                                 variant="destructive"
                                 onClick={() => handleDelete(action.id)}
-                                className="bg-red-500 dark:bg-red-600 hover:bg-red-600 dark:hover:bg-red-700 text-white"
+                                className="bg-red-500 dark:bg-red-600 hover:bg-red-600 dark:hover:bg-red-700 text-white text-sm"
                               >
                                 Delete
                               </Button>
                               <DialogClose asChild>
                                 <Button 
                                   type="button" 
-                                  variant="outline" 
+                                  variant="outline"
                                   className="text-zinc-600 dark:text-zinc-400 
                                     border-zinc-200 dark:border-zinc-700
                                     hover:bg-zinc-100 dark:hover:bg-zinc-800
-                                    hover:text-zinc-900 dark:hover:text-zinc-100"
+                                    hover:text-zinc-900 dark:hover:text-zinc-100
+                                    text-sm"
                                 >
                                   Cancel
                                 </Button>
@@ -148,6 +170,39 @@ export default function DataManagementCard() {
                     </td>
                   </tr>
                 ))}
+                {/* User ID row */}
+                <tr className="group transition-all duration-300 
+                  hover:bg-gradient-to-r hover:from-purple-500/10 hover:to-pink-500/10
+                  dark:hover:from-purple-400/10 dark:hover:to-pink-400/10">
+                  <td className="p-3 transition-colors">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <span className="text-base font-medium text-zinc-700 dark:text-zinc-200 group-hover:text-zinc-900 dark:group-hover:text-white transition-colors">
+                          User Key
+                        </span>
+                        <span className="text-sm text-zinc-500 dark:text-zinc-400 font-mono hidden">
+                          {userId}
+                        </span>
+                      </div>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={copyToClipboard}
+                        className="text-zinc-600 dark:text-zinc-400 
+                          group-hover:text-zinc-900 dark:group-hover:text-white 
+                          hover:bg-purple-100 dark:hover:bg-purple-500/20 
+                          rounded-full p-1.5 transition-colors"
+                        aria-label="Copy User ID"
+                      >
+                        {isCopied ? (
+                          <Check className="h-4 w-4 text-green-500" />
+                        ) : (
+                          <Copy className="h-4 w-4" />
+                        )}
+                      </Button>
+                    </div>
+                  </td>
+                </tr>
               </tbody>
             </table>
           </div>

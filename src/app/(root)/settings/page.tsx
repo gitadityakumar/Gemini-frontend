@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { Toaster } from "@/components/ui/toaster";
 import { useRecoilState } from "recoil";
@@ -12,6 +12,7 @@ import { getApiKey } from "@/app/actions/apiKeyActions";
 import { ServiceCard } from "@/components/ui/serviceCard";
 import DataManagementCard from "@/components/ui/data-management-card";
 import { ModeToggle } from "@/components/ui/themeMode";
+import { useUser } from "@clerk/nextjs";
 
 type ServiceType = "gemini" | "graq" | null;
 
@@ -21,7 +22,6 @@ export default function SettingsPage() {
   const [mode, setMode] = useRecoilState(modeState);
   const [apikey, setApiKey] = useRecoilState(apiKeyDataState);
   const { toast } = useToast();
-
   const toggleService = async (service: ServiceType) => {
     if (activeService === service) {
       setActiveService(null);
@@ -54,6 +54,9 @@ export default function SettingsPage() {
       });
     }
   };
+  const data = useUser();
+  const user = data.user?.id
+ 
 
   return (
     <>
@@ -65,6 +68,7 @@ export default function SettingsPage() {
           <div>
             <ModeToggle />
           </div>
+          
         </header>
         <div className="grid gap-8 md:grid-cols-2 transition-colors">
           <ServiceCard
@@ -79,10 +83,16 @@ export default function SettingsPage() {
             isActive={activeService === "graq"}
             onToggle={() => toggleService("graq")}
           />
+          {/* <div className="bg-slate-50 dark:bg-zinc-950 text-white">
+        {user}
+        </div> */}
         </div>
+        
         <Toaster />
         <DataManagementCard />
+        
       </div>
+      
     </>
   );
 }
